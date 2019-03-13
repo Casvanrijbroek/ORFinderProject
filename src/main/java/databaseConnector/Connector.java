@@ -8,7 +8,7 @@ import java.sql.*;
  * Using this class you can retrieve data from the database by submitting queries or make specific changes.
  *
  * @author Cas van Rijbroek
- * @version 0.1
+ * @version 1.0
  */
 public class Connector {
     /**
