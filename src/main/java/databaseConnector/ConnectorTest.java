@@ -11,7 +11,8 @@ public class ConnectorTest {
             Query query;
 
             connector = new Connector();
-            query = connector.getQuery("organisme 1");
+            query = connector.getQuery(SearchOption.ID, 1);
+            query = connector.getQuery(SearchOption.NAME, "organisme 2");
         } catch (SQLException err) {
             System.out.println("SQLException: " + err.getMessage());
             System.out.println("SQLState: " + err.getSQLState());
