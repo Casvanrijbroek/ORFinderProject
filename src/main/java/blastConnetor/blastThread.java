@@ -50,6 +50,7 @@ public class blastThread extends Thread {
 
     /**
      * Creates BLAST thread and sets parameters
+     *
      * @param subSequence
      * @param occOrf
      */
@@ -78,7 +79,8 @@ public class blastThread extends Thread {
 
 
             // write blast output to specified file
-            File f = new File( "outputFile" + File.separator + "newFile"+String.valueOf(rid));
+            String path = "src" + File.separator + "main" + File.separator + "java" + File.separator + "test" + File.separator + "saveFiles" + File.separator + "newFile" + String.valueOf(rid);
+            File f = new File(path);
             System.out.println(f.getCanonicalPath());
             System.out.println("Saving query results in file " + f.getAbsolutePath());
             writer = new FileWriter(f);
