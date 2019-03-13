@@ -4,7 +4,17 @@ import ORFinderApp.Query;
 
 import java.sql.*;
 
+/**
+ * This class can be used to make a connection to the owe7_pg2 database hosted on azure.com.
+ * Using this class you can retrieve data from the database by submitting queries or make specific changes.
+ *
+ * @author Cas van Rijbroek
+ * @version 0.1
+ */
 public class Connector {
+    /**
+     * The connection made with the database will be stored here for access to the full class.
+     */
     private Connection connection;
 
     private void makeConnection() throws SQLException {
