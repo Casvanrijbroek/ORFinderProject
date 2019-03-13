@@ -1,20 +1,24 @@
-package ORFinderApp;
+package orFinderApp;
 
 import java.util.ArrayList;
 
 public class ORF {
+
     /**
      * Arraylist containing the results
      */
     private ArrayList<Result> resultList;
+
     /**
      * startPosition of the ORFinder.ORFinderApp.ORF
      */
     private int startPosition;
+
     /**
      * stopPosition of the ORFinder.ORFinderApp.ORF
      */
     private int stopPosition;
+
     /**
      * constructor of the ORFinder.ORFinderApp.ORF
      *

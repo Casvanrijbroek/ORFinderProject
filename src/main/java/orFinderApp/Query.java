@@ -1,16 +1,19 @@
-package ORFinderApp;
+package orFinderApp;
 
 import java.util.ArrayList;
 
 public class Query {
+
     /**
      * ArrayList containing ORFinder.ORFinderApp.ORF resutls
      */
     private ArrayList<ORF> orfList;
+
     /**
      * Header of the result
      */
     private String header;
+
     /**
      * sequence of the result
      */
@@ -19,10 +22,10 @@ public class Query {
     /**
      * constructor of Querry
      *
-     * @param header
-     * @param sequence
+     * @param header   Header of the sequence
+     * @param sequence Protein sequence of the entry
      */
-    private Query(String header, String sequence) {
+    public Query(String header, String sequence) {
         this.header = header;
         this.sequence = sequence;
     }
@@ -30,7 +33,7 @@ public class Query {
     /**
      * clear Arraylist orfList
      */
-    protected void clearOrfList() {
+    public void clearOrfList() {
         orfList = null;
     }
 
@@ -46,13 +49,35 @@ public class Query {
 
     /**
      * Creates a list of sequences of the ORFs
+     *
      * @return Arraylist of protein sequences
      */
-    public ArrayList<String> getSequenceList(){
+    public ArrayList<String> getSequenceList() {
         ArrayList<String> sequenceList = new ArrayList<String>();
-        for (ORF singleORF: orfList){
+        for (ORF singleORF : orfList) {
             sequenceList.add(this.sequence.substring(singleORF.getStartPosition(), singleORF.getStopPosition()));
         }
         return sequenceList;
+    }
+
+    /**
+     * Gets orfList
+     *
+     * @return value of orfList
+     */
+    public ArrayList<ORF> getOrfList() {
+        return orfList;
+    }
+
+    /**
+     * Add another Orf object to the query
+     *
+     * @param newOrf ORF object to add
+     */
+    public void addOrfList(ORF newOrf) {
+        if (orfList == null) {
+            orfList = new ArrayList<ORF>();
+        }
+        orfList.add(newOrf);
     }
 }

@@ -1,4 +1,4 @@
-package ORFinderApp;
+package orFinderApp;
 
 public class Result {
 
