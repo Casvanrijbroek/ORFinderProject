@@ -1,6 +1,6 @@
 package databaseConnector;
 
-import ORFinderApp.Query;
+import orFinderApp.Query;
 import java.sql.*;
 
 /**
