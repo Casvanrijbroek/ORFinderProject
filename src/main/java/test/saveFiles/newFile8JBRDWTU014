@@ -1,0 +1,108 @@
+<p><!--
+QBlastInfoBegin
+	Status=READY
+QBlastInfoEnd
+--><p>
+<PRE>
+BLASTP 2.8.1+
+Reference: Stephen F. Altschul, Thomas L. Madden, Alejandro
+A. Schaffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and
+David J. Lipman (1997), "Gapped BLAST and PSI-BLAST: a new
+generation of protein database search programs", Nucleic
+Acids Res. 25:3389-3402.
+
+
+Reference for compositional score matrix adjustment: Stephen
+F. Altschul, John C. Wootton, E. Michael Gertz, Richa
+Agarwala, Aleksandr Morgulis, Alejandro A. Schaffer, and
+Yi-Kuo Yu (2005) "Protein database searches using
+compositionally adjusted substitution matrices", FEBS J.
+272:5101-5109.
+
+
+RID: 8JBRDWTU014
+
+
+Database: All non-redundant GenBank CDS
+translations+PDB+SwissProt+PIR+PRF excluding environmental samples
+from WGS projects
+           192,341,036 sequences; 70,028,863,371 total letters
+Query= 
+Length=550
+
+
+                                                                   Score        E     Max
+Sequences producing significant alignments:                       (Bits)     Value  ident
+
+AJO95984.1 Lte1p [Saccharomyces cerevisiae YJM1336]                1110       0.0    100%        
+AJO92952.1 Lte1p [Saccharomyces cerevisiae YJM428]                 1110       0.0    100%        
+AJO92879.1 Lte1p [Saccharomyces cerevisiae YJM326]                 1110       0.0    100%        
+NP_009378.1 mitotic regulator LTE1 [Saccharomyces cerevisiae S...  1110       0.0    100%        
+AJO96279.1 Lte1p [Saccharomyces cerevisiae YJM1355]                1110       0.0    100%        
+AJO93316.1 Lte1p [Saccharomyces cerevisiae YJM470]                 1110       0.0    100%        
+EHN08699.1 Lte1p [Saccharomyces cerevisiae x Saccharomyces kud...  1110       0.0    100%        
+KQC45736.1 LTE1p [Saccharomyces sp. 'boulardii']                   1109       0.0    100%        
+AJO97490.1 Lte1p [Saccharomyces cerevisiae YJM1433]                1109       0.0    100%        
+AJO96130.1 Lte1p [Saccharomyces cerevisiae YJM1341]                1109       0.0    100%        
+BAA04820.1 putative guanine nucleotide exchange factor [Saccha...  1109       0.0    100%        
+AHY74343.1 Lte1p [Saccharomyces cerevisiae YJM993]                 1109       0.0    100%        
+AJO92661.1 Lte1p [Saccharomyces cerevisiae YJM270]                 1108       0.0    100%        
+AJO92808.1 Lte1p [Saccharomyces cerevisiae YJM320]                 1108       0.0    100%        
+AJO97271.1 Lte1p [Saccharomyces cerevisiae YJM1417]                1107       0.0    100%        
+AJO95488.1 Lte1p [Saccharomyces cerevisiae YJM1252]                1107       0.0    100%        
+EDZ73996.1 YAL024Cp-like protein [Saccharomyces cerevisiae AWR...  1107       0.0    100%        
+AJO95411.1 Lte1p [Saccharomyces cerevisiae YJM1250]                1107       0.0    100%        
+EEU07248.1 Lte1p [Saccharomyces cerevisiae JAY291]                 1107       0.0    100%        
+AJO95636.1 Lte1p [Saccharomyces cerevisiae YJM1304]                1106       0.0    100%        
+AJO93388.1 Lte1p [Saccharomyces cerevisiae YJM541]                 1105       0.0    100%        
+ONH78908.1 Guanine nucleotide exchange factor LTE1 [Saccharomy...  1105       0.0    100%        
+AJO98648.1 Lte1p [Saccharomyces cerevisiae YJM1574]                1105       0.0    100%        
+AJO97854.1 Lte1p [Saccharomyces cerevisiae YJM1447]                1105       0.0    100%        
+AJO97707.1 Lte1p [Saccharomyces cerevisiae YJM1443]                1105       0.0    100%        
+AJO95135.1 Lte1p [Saccharomyces cerevisiae YJM1208]                1105       0.0    100%        
+AJO98793.1 Lte1p [Saccharomyces cerevisiae YJM1615]                1105       0.0    100%        
+AJO98074.1 Lte1p [Saccharomyces cerevisiae YJM1463]                1105       0.0    100%        
+AJO97929.1 Lte1p [Saccharomyces cerevisiae YJM1450]                1105       0.0    100%        
+AJO94916.1 Lte1p [Saccharomyces cerevisiae YJM1190]                1105       0.0    100%        
+AJO96988.1 Lte1p [Saccharomyces cerevisiae YJM1400]                1104       0.0    99%         
+AJO97342.1 Lte1p [Saccharomyces cerevisiae YJM1418]                1103       0.0    99%         
+AJO95561.1 Lte1p [Saccharomyces cerevisiae YJM1273]                1103       0.0    99%         
+AJO93755.1 Lte1p [Saccharomyces cerevisiae YJM682]                 1103       0.0    99%         
+GAA21401.1 K7_Lte1p [Saccharomyces cerevisiae Kyokai no. 7]        1103       0.0    99%         
+EDN59739.1 low temperature essential protein [Saccharomyces ce...  1103       0.0    99%         
+AJO97122.1 Lte1p [Saccharomyces cerevisiae YJM1402]                1103       0.0    99%         
+AJO96782.1 Lte1p [Saccharomyces cerevisiae YJM1388]                1103       0.0    99%         
+AJO94993.1 Lte1p [Saccharomyces cerevisiae YJM1199]                1103       0.0    99%         
+AJO94845.1 Lte1p [Saccharomyces cerevisiae YJM1133]                1103       0.0    99%         
+AJO94698.1 Lte1p [Saccharomyces cerevisiae YJM1083]                1103       0.0    99%         
+AJO92437.1 Lte1p [Saccharomyces cerevisiae YJM195]                 1103       0.0    99%         
+AJO96918.1 Lte1p [Saccharomyces cerevisiae YJM1399]                1103       0.0    99%         
+AJO96846.1 Lte1p [Saccharomyces cerevisiae YJM1389]                1102       0.0    99%         
+AJO96563.1 Lte1p [Saccharomyces cerevisiae YJM1385]                1102       0.0    99%         
+AJO93956.1 Lte1p [Saccharomyces cerevisiae YJM693]                 1102       0.0    99%         
+AJO96421.1 Lte1p [Saccharomyces cerevisiae YJM1381]                1101       0.0    99%         
+AJO95697.1 Lte1p [Saccharomyces cerevisiae YJM1307]                1101       0.0    99%         
+AJO93610.1 Lte1p [Saccharomyces cerevisiae YJM627]                 1101       0.0    99%         
+AJO93099.1 Lte1p [Saccharomyces cerevisiae YJM451]                 1101       0.0    99%         
+AJO98500.1 Lte1p [Saccharomyces cerevisiae YJM1549]                1101       0.0    100%        
+AJO96637.1 Lte1p [Saccharomyces cerevisiae YJM1386]                1100       0.0    99%         
+AJO96203.1 Lte1p [Saccharomyces cerevisiae YJM1342]                1100       0.0    99%         
+EJS44858.1 lte1p [Saccharomyces arboricola H-6]                    713        0.0    73%         
+XP_018224086.1 LTE1-like protein [Saccharomyces eubayanus]         709        0.0    73%         
+BAI49522.1 putative GDP/GTP exchange factor [Saccharomyces pas...  706        0.0    73%         
+XP_003671672.1 hypothetical protein NDAI_0H02550 [Naumovozyma ...  269        6e-75  39%         
+XP_003677006.1 hypothetical protein NCAS_0F01670 [Naumovozyma ...  268        2e-74  40%         
+XP_022464472.1 hypothetical protein KNAG_0D04870 [Kazachstania...  241        2e-65  35%         
+CDH10648.1 related to Guanine nucleotide exchange factor LTE1 ...  236        1e-63  37%         
+XP_003959554.1 hypothetical protein KAFR_0K00640 [Kazachstania...  233        2e-62  39%         
+SJM84208.1 related to Guanine nucleotide exchange factor LTE1 ...  233        3e-62  36%         
+AQZ13414.1 LTE1 (YAL024C) [Zygosaccharomyces parabailii]           232        6e-62  37%         
+CDH15049.1 related to Guanine nucleotide exchange factor LTE1 ...  232        6e-62  37%         
+CDF90582.1 ZYBA0S07-04390g1_1 [Zygosaccharomyces bailii CLIB 213]  230        1e-61  37%         
+SMN21488.1 similar to Saccharomyces cerevisiae YAL024C LTE1 Pr...  228        8e-61  36%         
+XP_001642571.1 hypothetical protein Kpol_316p6 [Vanderwaltozym...  223        5e-59  36%         
+GAV48808.1 hypothetical protein ZYGR_0N02130 [Zygosaccharomyce...  219        2e-57  37%         
+XP_002496660.1 uncharacterized protein ZYRO0D05214g [Zygosacch...  218        3e-57  37%         
+OXB43400.1 hypothetical protein B1J91_G06226g [[Candida] glabr...  203        3e-52  35%         
+GAV53720.1 hypothetical protein ZYGR_0AK02220 [Zygosaccharomyc...  202        8e-52  36%         
+KTB23423.1 Guanine nucleotide exchange factor LTE1 [[Candida] ...  202        8e-5
