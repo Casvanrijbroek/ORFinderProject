@@ -23,6 +23,18 @@ class ConnectorTest {
         );
     }
 
+    @Test
+    @Disabled
+    void insertQuery() {
+
+    }
+
+    @Test
+    @Disabled
+    void deleteQuery() {
+
+    }
+
     @AfterAll
     void closeConnection() throws SQLException {
         connector.closeConnection();
