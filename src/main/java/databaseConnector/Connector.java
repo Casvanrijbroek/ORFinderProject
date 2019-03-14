@@ -15,7 +15,6 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class Connector {
-    private static String SELECT_FROM_HEADER = "SELECT * FROM header WHERE %s = '%s'";
     /**
      * The connection made with the database will be stored here for access to the full class.
      */
@@ -71,7 +70,7 @@ public class Connector {
         ORF orf;
 
         statement = connection.createStatement();
-        resultSet = statement.executeQuery("SELECT * FROM orf WHERE Header_header_id = "+headerID);
+        resultSet = statement.executeQuery(String.format("SELECT * FROM orf WHERE Header_header_id = %d", headerID));
         statement.close();
 
         orfList = new ArrayList<>();
@@ -101,7 +100,7 @@ public class Connector {
         Result result;
 
         statement = connection.createStatement();
-        resultSet = statement.executeQuery("SELECT * FROM result WHERE ORF_orf_id = "+orfID);
+        resultSet = statement.executeQuery(String.format("SELECT * FROM result WHERE ORF_orf_id = %d", orfID));
         statement.close();
 
         resultList = new ArrayList<>();
@@ -141,7 +140,7 @@ public class Connector {
         checkConnection();
 
         statement = connection.createStatement();
-        resultSet = statement.executeQuery("SELECT * FROM header WHERE "+searchOption+" = '"+value+"'");
+        resultSet = statement.executeQuery(String.format("SELECT * FROM header WHERE %s = '%s'", searchOption, value));
         statement.close();
 
         resultSet.next();
