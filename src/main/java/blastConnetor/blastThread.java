@@ -135,7 +135,7 @@ public class blastThread extends Thread {
         /**
          * Set output format, xml in this case
          */
-        outputProps.setOutputFormat(BlastOutputFormatEnum.Text);
+        outputProps.setOutputFormat(BlastOutputFormatEnum.XML);
         /**
          * 5 Best hits are returned
          */

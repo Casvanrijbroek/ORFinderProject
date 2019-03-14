@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Query {
 
     /**
-     * ArrayList containing ORFinder.ORFinderApp.ORF resutls
+     * ArrayList containing ORFinder.orFinderApp.ORF resutls
      */
     private ArrayList<ORF> orfList;
 

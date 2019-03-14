@@ -10,17 +10,17 @@ public class ORF {
     private ArrayList<Result> resultList;
 
     /**
-     * startPosition of the ORFinder.ORFinderApp.ORF
+     * startPosition of the ORFinder.orFinderApp.ORF
      */
     private int startPosition;
 
     /**
-     * stopPosition of the ORFinder.ORFinderApp.ORF
+     * stopPosition of the ORFinder.orFinderApp.ORF
      */
     private int stopPosition;
 
     /**
-     * constructor of the ORFinder.ORFinderApp.ORF
+     * constructor of the ORFinder.orFinderApp.ORF
      *
      * @param startPosition
      * @param stopPosition
