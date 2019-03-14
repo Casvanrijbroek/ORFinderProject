@@ -4,10 +4,12 @@ import orFinderApp.ORF;
 import org.biojava.nbio.ws.alignment.qblast.*;
 
 import java.io.*;
+import java.net.ConnectException;
 
 
-public class blastThread extends Thread {
+public class blastThread extends Thread{
 
+    private static int amThreads = 0;
     /**
      * Thread of this occurence
      */
@@ -57,6 +59,7 @@ public class blastThread extends Thread {
     blastThread(String subSequence, ORF occOrf) {
         this.sequence = subSequence;
         this.occOrf = occOrf;
+        amThreads++;
         settings();
     }
 
@@ -71,7 +74,7 @@ public class blastThread extends Thread {
             while (!service.isReady(rid)) {
                 //todo write timeout handeling
                 System.out.println("ï be flossin...");
-                Thread.sleep(5000);
+                Thread.sleep(5000/amThreads);
             }
             System.out.println("blastcomplete");
             InputStream in = service.getAlignmentResults(rid, outputProps);
@@ -91,11 +94,14 @@ public class blastThread extends Thread {
             }
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
+        } catch (java.io.IOException e){
+            System.out.println(e.getMessage());
         } catch (Exception e) {
+            System.out.println(e);
             //todo Propper exception handling
             System.out.println("javalangexception");
             System.out.println(e.getMessage());
-            System.out.println(e);
+
         }
     }
 

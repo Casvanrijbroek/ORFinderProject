@@ -4,6 +4,8 @@ import blastConnetor.proteinBlast;
 import orFinderApp.ORF;
 import orFinderApp.Query;
 
+import java.net.ConnectException;
+
 public class testClass {
     public static String SEQ = "RNQSVLSLYKTSDVFRLPEKLQSSNSSKNQRSPSMLLFPDNTSNVYSKHRIAKEPSVDNESEDMS" +
             "DSKQKISHLSKVTLVSTLMKGVDYPSSYAVDKIMPPTPAKKVEFILNSLYIPEDLNEQSGTLQGTSTTSS" +
@@ -21,10 +23,13 @@ public class testClass {
             "RRRQTIMNIPFTPDQSEKEGFTSSSPEKIDVSANVDVAVQAAQIQELIGQYRIHDSRLMISNNESHVPFI" +
             "LMYDSLSVAQQMTLIEKEILGEIDWKDLLDLKMKHEGPQVISWLQLLVRNETLSGIDLAISRFNLTVDWI" +
             "ISEILLTKSSKMKRNVIQRFIHVADHCRTFQNFNTLMEIILA";
+
     public static void main(String[] args) {
         Query query = new Query("test header", SEQ);
-        ORF newOrf = new ORF(50, 600);
+        ORF newOrf = new ORF(400, 600);
+        ORF newOrf2 = new ORF(50, 400);
         query.addOrfList(newOrf);
+        query.addOrfList(newOrf2);
         proteinBlast testBlast = new proteinBlast();
         testBlast.proteinBlast(query);
         testBlast.blast();
