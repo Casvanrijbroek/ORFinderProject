@@ -62,16 +62,14 @@ public class Connector {
      * @param query the Query to add the ORFs to
      * @param headerID the header id of the header to get ORFs from
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws ConnectionException if the method is called without establishing a connection first
      */
-    private void addOrfList(Query query, int headerID) throws SQLException {
+    private void addOrfList(Query query, int headerID) throws SQLException, ConnectionException {
         ArrayList<ORF> orfList;
         ResultSet resultSet;
-        Statement statement;
         ORF orf;
 
-        statement = connection.createStatement();
-        resultSet = statement.executeQuery(String.format("SELECT * FROM orf WHERE Header_header_id = %d", headerID));
-        statement.close();
+        resultSet = executeCommand(String.format("SELECT * FROM orf WHERE Header_header_id = %d", headerID));
 
         orfList = new ArrayList<>();
 
@@ -92,16 +90,14 @@ public class Connector {
      * @param orf the ORF to add the ORFs to
      * @param orfID the orf id of the header to get Results from
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws ConnectionException if the method is called without establishing a connection first
      */
-    private void addResultList(ORF orf, int orfID) throws SQLException {
+    private void addResultList(ORF orf, int orfID) throws SQLException, ConnectionException {
         ArrayList<Result> resultList;
         ResultSet resultSet;
-        Statement statement;
         Result result;
 
-        statement = connection.createStatement();
-        resultSet = statement.executeQuery(String.format("SELECT * FROM result WHERE ORF_orf_id = %d", orfID));
-        statement.close();
+        resultSet = executeCommand(String.format("SELECT * FROM result WHERE ORF_orf_id = %d", orfID));
 
         resultList = new ArrayList<>();
 
@@ -126,7 +122,7 @@ public class Connector {
     /**
      * Retrieves a single header entry from the database based on ID or header.
      *
-     * @param searchOption an SearchOption enum indicating the attribute type that is to be searched on
+     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value a String with the attribute that is to be searched on
      * @return a single Query object filled with the data retrieved from the database
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
@@ -134,14 +130,9 @@ public class Connector {
      */
     public Query getQuery(SearchOption searchOption, String value) throws SQLException, ConnectionException {
         ResultSet resultSet;
-        Statement statement;
         Query query;
 
-        checkConnection();
-
-        statement = connection.createStatement();
-        resultSet = statement.executeQuery(String.format("SELECT * FROM header WHERE %s = '%s'", searchOption, value));
-        statement.close();
+        resultSet = executeCommand(String.format("SELECT * FROM header WHERE %s = '%s'", searchOption, value));
 
         resultSet.next();
         query = new Query(resultSet.getString("name"), resultSet.getString("sequence"));
@@ -154,7 +145,7 @@ public class Connector {
     /**
      * Retrieves a single header entry from the database based on ID
      *
-     * @param searchOption an SearchOption enum indicating the attribute type that is to be searched on
+     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value an Integer with the ID that is to be searched on
      * @return a single Query object filled with the data retrieved from the database
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
@@ -178,5 +169,67 @@ public class Connector {
 
         statement = connection.createStatement();
         //TODO Query must have a getHeader method
+    }
+
+    /**
+     * Deletes a query and all related orfs and results from the database.
+     *
+     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
+     * @param value a String with the attribute that is to be searched on
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws ConnectionException if the method is called without establishing a connection first
+     */
+    public void deleteQuery(SearchOption searchOption, String value) throws SQLException, ConnectionException {
+        StringBuilder deleteStatement;
+        Statement statement;
+
+        checkConnection();
+
+        deleteStatement = new StringBuilder("DELETE FROM header ");
+        statement = connection.createStatement();
+
+        if (hasORF(searchOption, value, statement)) {
+            deleteStatement.append("JOIN orf ");
+
+            if (hasResult(searchOption, value, statement)) {
+
+            }
+        }
+    }
+
+    /**
+     * Deletes a query and all related orfs and results from the database.
+     *
+     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
+     * @param value an Integer with the ID that is to be searched on
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws ConnectionException if the method is called without establishing a connection first
+     */
+    public void deleteQuery(SearchOption searchOption, int value) throws SQLException, ConnectionException {
+        deleteQuery(searchOption, Integer.toString(value));
+    }
+
+    private boolean hasORF(SearchOption searchOption, String value, Statement statement) throws SQLException {
+        return statement.executeQuery(String.format("SELECT header_id FROM header JOIN orf ON " +
+                "header.header_id = orf.Header_header_id WHERE %s = '%s'", searchOption, value)).next();
+    }
+
+    private boolean hasResult(SearchOption searchOption, String value, Statement statement) throws SQLException {
+        return statement.executeQuery(String.format("SELECT header_id FROM header JOIN orf ON " +
+                "header.header_id = orf.Header_header_id JOIN result r ON orf.orf_id = r.ORF_orf_id " +
+                "WHERE %s = '%s'", searchOption, value)).next();
+    }
+
+    private ResultSet executeCommand(String command) throws SQLException, ConnectionException {
+        ResultSet resultSet;
+        Statement  statement;
+
+        checkConnection();
+
+        statement = connection.createStatement();
+        resultSet = statement.executeQuery(command);
+        statement.close();
+
+        return resultSet;
     }
 }
