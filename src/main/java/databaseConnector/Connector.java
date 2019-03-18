@@ -10,7 +10,6 @@ import java.util.ArrayList;
 /**
  * This class can be used to make a connection to the owe7_pg2 database hosted on azure.com.
  * Using this class you can retrieve data from the database by submitting queries or make specific changes.
- * The class
  *
  * @author Cas van Rijbroek
  * @version 1.1
@@ -65,12 +64,14 @@ public class Connector {
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      * @throws ConnectionException if the method is called without establishing a connection first
      */
-    private void addOrfList(Query query, int headerID) throws SQLException, ConnectionException {
+    private void addOrfList(Query query, int headerID) throws SQLException {
         ArrayList<ORF> orfList;
         ResultSet resultSet;
+        Statement statement;
         ORF orf;
 
-        resultSet = executeCommand(String.format("SELECT * FROM orf WHERE Header_header_id = %d", headerID));
+        statement = connection.createStatement();
+        resultSet = statement.executeQuery(String.format("SELECT * FROM orf WHERE Header_header_id = %d", headerID));
 
         orfList = new ArrayList<>();
 
@@ -93,12 +94,14 @@ public class Connector {
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      * @throws ConnectionException if the method is called without establishing a connection first
      */
-    private void addResultList(ORF orf, int orfID) throws SQLException, ConnectionException {
+    private void addResultList(ORF orf, int orfID) throws SQLException {
         ArrayList<Result> resultList;
         ResultSet resultSet;
+        Statement statement;
         Result result;
 
-        resultSet = executeCommand(String.format("SELECT * FROM result WHERE ORF_orf_id = %d", orfID));
+        statement = connection.createStatement();
+        resultSet = statement.executeQuery(String.format("SELECT * FROM result WHERE ORF_orf_id = %d", orfID));
 
         resultList = new ArrayList<>();
 
@@ -131,20 +134,26 @@ public class Connector {
      */
     public Query getQuery(SearchOption searchOption, String value) throws SQLException, ConnectionException {
         ResultSet resultSet;
+        Statement statement;
         Query query;
 
-        resultSet = executeCommand(String.format("SELECT * FROM header WHERE %s = '%s'", searchOption, value));
+        checkConnection();
+
+        statement = connection.createStatement();
+        resultSet = statement.executeQuery(String.format("SELECT * FROM header WHERE %s = '%s'", searchOption, value));
 
         resultSet.next();
         query = new Query(resultSet.getString("name"), resultSet.getString("sequence"));
 
         addOrfList(query, resultSet.getInt("header_id"));
 
+        statement.close();
+
         return query;
     }
 
     /**
-     * Retrieves a single header entry from the database based on ID.
+     * Retrieves a single header entry from the database based on ID
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value an Integer with the ID that is to be searched on
@@ -157,7 +166,7 @@ public class Connector {
     }
 
     /**
-     * Inserts the data in a Query object into the database.
+     * Inserts the data in a Query object into the database
      *
      * @param query the Query that is to be inserted into the database
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
@@ -178,6 +187,7 @@ public class Connector {
      */
     public void deleteQuery(SearchOption searchOption, String value) throws SQLException, ConnectionException {
         StringBuilder deleteStatement;
+
         checkConnection();
 
         deleteStatement = new StringBuilder("DELETE FROM header ");
@@ -204,7 +214,7 @@ public class Connector {
     }
 
     /**
-     * Checks whether or not a column in header contains one or more orf foreign keys based on ID or header.
+     * Checks whether or not a column in header contains one or more orf foreign keys based on ID or header
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value a String with the attribute that is to be searched on
@@ -212,12 +222,12 @@ public class Connector {
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
     private boolean hasORF(SearchOption searchOption, String value) throws SQLException, ConnectionException {
-        return executeCommand(String.format("SELECT header_id FROM header JOIN orf ON " +
+        return connection.createStatement().executeQuery(String.format("SELECT header_id FROM header JOIN orf ON " +
                 "header.header_id = orf.Header_header_id WHERE %s = '%s'", searchOption, value)).next();
     }
 
     /**
-     * Checks whether or not a column in header contains one or more orf foreign keys based on ID.
+     * Checks whether or not a column in header contains one or more orf foreign keys based on ID
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value an Integer with the ID that is to be searched on
@@ -229,52 +239,28 @@ public class Connector {
     }
 
     /**
-     * Checks whether or not a column in result contains one or more result foreign keys based on ID or header.
+     * Checks whether or not a column in result contains one or more result foreign keys based on ID or header
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value a String with the attribute that is to be searched on
      * @return true if the orf contains one or more results, else false
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
-    private boolean hasResult(SearchOption searchOption, String value) throws SQLException, ConnectionException {
-        return executeCommand(String.format("SELECT header_id FROM header JOIN orf ON " +
+    private boolean hasResult(SearchOption searchOption, String value) throws SQLException {
+        return connection.createStatement().executeQuery(String.format("SELECT header_id FROM header JOIN orf ON " +
                 "header.header_id = orf.Header_header_id JOIN result r ON orf.orf_id = r.ORF_orf_id " +
                 "WHERE %s = '%s'", searchOption, value)).next();
     }
 
     /**
-     * Checks whether or not a column in result contains one or more result foreign keys based on ID.
+     * Checks whether or not a column in result contains one or more result foreign keys based on ID
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value An Integer with the ID that is to be searched on
      * @return true if the orf contains one or more results, else false
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
-    private boolean hasResult(SearchOption searchOption, int value) throws  SQLException, ConnectionException {
+    private boolean hasResult(SearchOption searchOption, int value) throws  SQLException {
         return hasResult(searchOption, Integer.toString(value));
-    }
-
-    /**
-     * Executes a SQL statement on the database and returns the results.
-     * The benefit of using this method is the additional call to the checkConnection method. When executing queries
-     * using this method you will always check if the Connection is initialised.
-     *
-     * @param command the SQL statement that is to be executed
-     * @return a ResultSet object containing the results (can contain 0 results)
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     * @throws ConnectionException if the method is called without establishing a connection first
-     */
-    private ResultSet executeCommand(String command) throws SQLException, ConnectionException {
-        ResultSet resultSet;
-        Statement statement;
-
-        checkConnection();
-
-        statement = connection.createStatement();
-        resultSet = statement.executeQuery(command);
-
-        statement.close();
-
-        return resultSet;
     }
 }
