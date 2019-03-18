@@ -163,11 +163,7 @@ public class Connector {
      * @throws ConnectionException if the method is called without establishing a connection first
      */
     public void insertQuery(Query query) throws SQLException, ConnectionException {
-        Statement statement;
-
         checkConnection();
-
-        statement = connection.createStatement();
         //TODO Query must have a getHeader method
     }
 
@@ -181,17 +177,14 @@ public class Connector {
      */
     public void deleteQuery(SearchOption searchOption, String value) throws SQLException, ConnectionException {
         StringBuilder deleteStatement;
-        Statement statement;
-
         checkConnection();
 
         deleteStatement = new StringBuilder("DELETE FROM header ");
-        statement = connection.createStatement();
 
-        if (hasORF(searchOption, value, statement)) {
+        if (hasORF(searchOption, value)) {
             deleteStatement.append("JOIN orf ");
 
-            if (hasResult(searchOption, value, statement)) {
+            if (hasResult(searchOption, value)) {
 
             }
         }
@@ -209,25 +202,76 @@ public class Connector {
         deleteQuery(searchOption, Integer.toString(value));
     }
 
-    private boolean hasORF(SearchOption searchOption, String value, Statement statement) throws SQLException {
-        return statement.executeQuery(String.format("SELECT header_id FROM header JOIN orf ON " +
+    /**
+     * Checks whether or not a column in header contains one or more orf foreign keys based on ID or header
+     *
+     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
+     * @param value a String with the attribute that is to be searched on
+     * @return true if the header has one or more orf, else false
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
+    private boolean hasORF(SearchOption searchOption, String value) throws SQLException, ConnectionException {
+        return executeCommand(String.format("SELECT header_id FROM header JOIN orf ON " +
                 "header.header_id = orf.Header_header_id WHERE %s = '%s'", searchOption, value)).next();
     }
 
-    private boolean hasResult(SearchOption searchOption, String value, Statement statement) throws SQLException {
-        return statement.executeQuery(String.format("SELECT header_id FROM header JOIN orf ON " +
+    /**
+     * Checks whether or not a column in header contains one or more orf foreign keys based on ID
+     *
+     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
+     * @param value an Integer with the ID that is to be searched on
+     * @return true if the header has one or more orf, else false
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
+    private boolean hasORF(SearchOption searchOption, int value) throws SQLException, ConnectionException {
+        return hasORF(searchOption, Integer.toString(value));
+    }
+
+    /**
+     * Checks whether or not a column in result contains one or more result foreign keys based on ID or header
+     *
+     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
+     * @param value a String with the attribute that is to be searched on
+     * @return true if the orf contains one or more results, else false
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
+    private boolean hasResult(SearchOption searchOption, String value) throws SQLException, ConnectionException {
+        return executeCommand(String.format("SELECT header_id FROM header JOIN orf ON " +
                 "header.header_id = orf.Header_header_id JOIN result r ON orf.orf_id = r.ORF_orf_id " +
                 "WHERE %s = '%s'", searchOption, value)).next();
     }
 
+    /**
+     * Checks whether or not a column in result contains one or more result foreign keys based on ID
+     *
+     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
+     * @param value An Integer with the ID that is to be searched on
+     * @return true if the orf contains one or more results, else false
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
+    private boolean hasResult(SearchOption searchOption, int value) throws  SQLException, ConnectionException {
+        return hasResult(searchOption, Integer.toString(value));
+    }
+
+    /**
+     * Executes a SQL statement on the database and returns the results
+     * The benefit of using this method is the additional call to the checkConnection method, when executing queries
+     * using this method you will always check whether the Connection is initialised
+     *
+     * @param command the SQL statement that is to be executed
+     * @return a ResultSet object containing the results (can contain 0 results)
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws ConnectionException if the method is called without establishing a connection first
+     */
     private ResultSet executeCommand(String command) throws SQLException, ConnectionException {
         ResultSet resultSet;
-        Statement  statement;
+        Statement statement;
 
         checkConnection();
 
         statement = connection.createStatement();
         resultSet = statement.executeQuery(command);
+
         statement.close();
 
         return resultSet;
