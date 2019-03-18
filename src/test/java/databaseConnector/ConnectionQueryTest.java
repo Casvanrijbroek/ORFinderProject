@@ -56,10 +56,9 @@ public class ConnectionQueryTest {
         connector.deleteQuery(SearchOption.ID, 4);
     }
 
-    @Test
     @Disabled
     public void deleteQueryFalseIndex() throws SQLException, ConnectionException {
-        connector.deleteQuery(SearchOption.ID, 1000000000);
+        connector.deleteQuery(SearchOption.ID, -1);
     }
 
     @After

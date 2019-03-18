@@ -1,8 +1,6 @@
 package databaseConnector;
 
-import orFinderApp.ORF;
-import orFinderApp.Query;
-import orFinderApp.Result;
+import orFinderApp.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -194,7 +192,7 @@ public class Connector {
                 "LEFT JOIN result on orf_id = ORF_orf_id " +
                 "WHERE %s = '%s'";
 
-        //tempMustUse();
+        tempMustUse();
         checkConnection();
 
         statement = connection.createStatement();
