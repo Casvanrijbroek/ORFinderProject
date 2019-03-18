@@ -47,9 +47,19 @@ public class ConnectionQueryTest {
     }
 
     @Test
-    @Disabled
-    public void deleteQuery() {
+    public void deleteQuery() throws SQLException, ConnectionException {
+        connector.deleteQuery(SearchOption.NAME, "delete this");
+    }
 
+    @Test
+    public void deleteQueryInt() throws SQLException, ConnectionException {
+        connector.deleteQuery(SearchOption.ID, 4);
+    }
+
+    @Test
+    @Disabled
+    public void deleteQueryFalseIndex() throws SQLException, ConnectionException {
+        connector.deleteQuery(SearchOption.ID, 1000000000);
     }
 
     @After

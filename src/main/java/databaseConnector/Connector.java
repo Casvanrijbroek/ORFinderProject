@@ -186,19 +186,31 @@ public class Connector {
      * @throws ConnectionException if the method is called without establishing a connection first
      */
     public void deleteQuery(SearchOption searchOption, String value) throws SQLException, ConnectionException {
-        StringBuilder deleteStatement;
+        Statement statement;
+        String deleteCommand;
 
+        deleteCommand = "DELETE %s FROM header " +
+                "LEFT JOIN orf on header_id = Header_header_id " +
+                "LEFT JOIN result on orf_id = ORF_orf_id " +
+                "WHERE %s = '%s'";
+
+        //tempMustUse();
         checkConnection();
 
-        deleteStatement = new StringBuilder("DELETE FROM header ");
+        statement = connection.createStatement();
+        statement.executeUpdate(String.format(deleteCommand, "result", searchOption, value));
+        statement.executeUpdate(String.format(deleteCommand, "orf", searchOption, value));
+        statement.executeUpdate(String.format(deleteCommand, "header", searchOption, value));
+        statement.close();
+    }
 
-        if (hasORF(searchOption, value)) {
-            deleteStatement.append("JOIN orf ");
-
-            if (hasResult(searchOption, value)) {
-
-            }
-        }
+    void tempMustUse() throws SQLException {
+        Statement statement;
+        statement = connection.createStatement();
+        statement.executeUpdate("INSERT INTO header VALUES (4, 'delete this', 'ATCG')");
+        statement.executeUpdate("INSERT INTO orf VALUES(4, 1, 10, 4)");
+        statement.executeUpdate("INSERT INTO result VALUES(4, 4, 'ACC', 'desc', 10, 30, 1, 10, 1, 10)");
+        statement.close();
     }
 
     /**
@@ -211,56 +223,5 @@ public class Connector {
      */
     public void deleteQuery(SearchOption searchOption, int value) throws SQLException, ConnectionException {
         deleteQuery(searchOption, Integer.toString(value));
-    }
-
-    /**
-     * Checks whether or not a column in header contains one or more orf foreign keys based on ID or header
-     *
-     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
-     * @param value a String with the attribute that is to be searched on
-     * @return true if the header has one or more orf, else false
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    private boolean hasORF(SearchOption searchOption, String value) throws SQLException, ConnectionException {
-        return connection.createStatement().executeQuery(String.format("SELECT header_id FROM header JOIN orf ON " +
-                "header.header_id = orf.Header_header_id WHERE %s = '%s'", searchOption, value)).next();
-    }
-
-    /**
-     * Checks whether or not a column in header contains one or more orf foreign keys based on ID
-     *
-     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
-     * @param value an Integer with the ID that is to be searched on
-     * @return true if the header has one or more orf, else false
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    private boolean hasORF(SearchOption searchOption, int value) throws SQLException, ConnectionException {
-        return hasORF(searchOption, Integer.toString(value));
-    }
-
-    /**
-     * Checks whether or not a column in result contains one or more result foreign keys based on ID or header
-     *
-     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
-     * @param value a String with the attribute that is to be searched on
-     * @return true if the orf contains one or more results, else false
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    private boolean hasResult(SearchOption searchOption, String value) throws SQLException {
-        return connection.createStatement().executeQuery(String.format("SELECT header_id FROM header JOIN orf ON " +
-                "header.header_id = orf.Header_header_id JOIN result r ON orf.orf_id = r.ORF_orf_id " +
-                "WHERE %s = '%s'", searchOption, value)).next();
-    }
-
-    /**
-     * Checks whether or not a column in result contains one or more result foreign keys based on ID
-     *
-     * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
-     * @param value An Integer with the ID that is to be searched on
-     * @return true if the orf contains one or more results, else false
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    private boolean hasResult(SearchOption searchOption, int value) throws  SQLException {
-        return hasResult(searchOption, Integer.toString(value));
     }
 }
