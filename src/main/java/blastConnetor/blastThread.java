@@ -89,6 +89,7 @@ public class blastThread extends Thread{
             String line;
             while ((line = reader.readLine()) != null) {
                 newXML.append(line);
+                System.out.println(line);
             }
             new saveBlastToResults().saveBlastToResults(newXML.toString(), occOrf, 5);
         } catch (InterruptedException e) {
