@@ -1,5 +1,6 @@
 package orFinderApp;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ORF {
@@ -10,17 +11,17 @@ public class ORF {
     private ArrayList<Result> resultList;
 
     /**
-     * startPosition of the ORFinder.ORFinderApp.ORF
+     * startPosition of the ORFinder.orFinderApp.ORF
      */
     private int startPosition;
 
     /**
-     * stopPosition of the ORFinder.ORFinderApp.ORF
+     * stopPosition of the ORFinder.orFinderApp.ORF
      */
     private int stopPosition;
 
     /**
-     * constructor of the ORFinder.ORFinderApp.ORF
+     * constructor of the ORFinder.orFinderApp.ORF
      *
      * @param startPosition
      * @param stopPosition
@@ -72,5 +73,14 @@ public class ORF {
      */
     public void clearResultList() {
         resultList = null;
+    }
+
+    public Result addResult(){
+        this.resultList.add(new Result());
+        return this.resultList.get(resultList.size() - 1);
+    }
+
+    public void setResultList(ArrayList<Result> resultList){
+        this.resultList = resultList;
     }
 }

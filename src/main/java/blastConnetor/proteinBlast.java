@@ -5,7 +5,7 @@ import orFinderApp.Query;
 
 import java.util.ArrayList;
 
-public class proteinBlast {
+public class proteinBlast{
 
     /**
      * Query impot of the Blast

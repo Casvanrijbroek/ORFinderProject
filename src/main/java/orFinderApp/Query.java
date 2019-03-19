@@ -5,9 +5,18 @@ import java.util.ArrayList;
 public class Query {
 
     /**
-     * ArrayList containing ORFinder.ORFinderApp.ORF resutls
+     * ArrayList containing ORFinder.orFinderApp.ORF resutls
      */
     private ArrayList<ORF> orfList;
+
+    /**
+     * Gets header
+     *
+     * @return value of header
+     */
+    public String getHeader() {
+        return header;
+    }
 
     /**
      * Header of the result
@@ -80,4 +89,5 @@ public class Query {
         }
         orfList.add(newOrf);
     }
+
 }
