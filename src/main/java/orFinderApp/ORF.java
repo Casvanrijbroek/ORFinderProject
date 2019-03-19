@@ -28,6 +28,7 @@ public class ORF {
      */
     public ORF(int startPosition, int stopPosition) {
         setPositions(startPosition, stopPosition);
+        resultList = new ArrayList<>();
     }
 
     /**
@@ -75,9 +76,8 @@ public class ORF {
         resultList = null;
     }
 
-    public Result addResult(){
-        this.resultList.add(new Result());
-        return this.resultList.get(resultList.size() - 1);
+    public void addResult(Result addResult){
+        this.resultList.add(addResult);
     }
 
     public void setResultList(ArrayList<Result> resultList){

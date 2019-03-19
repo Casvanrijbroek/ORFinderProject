@@ -15,7 +15,6 @@ public class saveBlastToResults {
     private static ArrayList<String> REGEXLIST = new ArrayList<String>(
             Arrays.asList("Hit_accession", "Hit_def", "Hsp_bit-score", "Hsp_query-from", "Hsp_query-to", "Hit_len", "Hsp_evalue", "Hsp_identity", "Hsp_hit-from", "Hsp_hit-to"));
 
-
     // accession = Hit_accession
     // description = Hit_def
     // score = Hsp_bit-score
@@ -46,17 +45,18 @@ public class saveBlastToResults {
             if (sinHit.find()) {
                 regexResults.add(sinHit.group(1));
             }
-            Result tempResult = new Result();
-            tempResult.setAccession(regexResults.get(0));
-            tempResult.setDescription(regexResults.get(1));
-            tempResult.setpValue(6);
-            tempResult.setIdentity(7);
-            tempResult.setScore(regexResults.get(2));
-            tempResult.setQueryCover(((regexResults.get(4) - regexResults.get(3) + 1)/ regexResults.get(5))* 100);
-            tempResult.setStartPosition(8);
-            tempResult.setStopPosition(9);
-
         }
+        Result tempResult = new Result();
+        tempResult.setAccession(regexResults.get(0));
+        tempResult.setDescription(regexResults.get(1));
+        tempResult.setpValue(Float.parseFloat(regexResults.get(6)));
+        tempResult.setIdentity(Math.round(Float.parseFloat(regexResults.get(7))));
+        tempResult.setScore(Math.round(Float.parseFloat(regexResults.get(2))));
+        tempResult.setQueryCover(((Integer.parseInt(regexResults.get(4)) - Integer.parseInt(regexResults.get(3))
+                + 1) / Integer.parseInt(regexResults.get(5))) * 100);
+        tempResult.setStartPosition(Integer.parseInt(regexResults.get(7)));
+        tempResult.setStopPosition(Integer.parseInt(regexResults.get(8)));
+        orfSave.addResult(tempResult);
     }
 
 

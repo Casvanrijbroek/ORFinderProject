@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.ConnectException;
 
 
-public class blastThread extends Thread{
+public class blastThread extends Thread {
 
     private static int amThreads = 0;
     /**
@@ -68,7 +68,9 @@ public class blastThread extends Thread{
      */
     public void run() {
 //        rid = new String();
+        rid = "8ZAPDFPA015";
         try {
+            //todo Uncomment
 //            rid = service.sendAlignmentRequest(this.sequence, props);
 //            System.out.println(rid);
 //            System.out.println(amThreads);
@@ -79,7 +81,7 @@ public class blastThread extends Thread{
 //            }
 
             System.out.println("blastcomplete");
-            InputStream in = service.getAlignmentResults("8ZAPDFPA015", outputProps);
+            InputStream in = service.getAlignmentResults(rid, outputProps);
             reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder newXML = new StringBuilder();
             String line;
@@ -89,7 +91,7 @@ public class blastThread extends Thread{
             new saveBlastToResults().saveBlastToResults(newXML.toString(), occOrf, 5);
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
-        } catch (java.io.IOException e){
+        } catch (java.io.IOException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println(e);
@@ -146,5 +148,5 @@ public class blastThread extends Thread{
         //todo Biojava parametrs werken nog niet
         outputProps.setAlignmentNumber(1);
 
-        }
+    }
 }
