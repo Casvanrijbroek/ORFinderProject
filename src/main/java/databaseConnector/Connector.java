@@ -60,7 +60,6 @@ public class Connector {
      * @param query the Query to add the ORFs to
      * @param headerID the header id of the header to get ORFs from
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     * @throws ConnectionException if the method is called without establishing a connection first
      */
     private void addOrfList(Query query, int headerID) throws SQLException {
         ArrayList<ORF> orfList;
@@ -79,8 +78,7 @@ public class Connector {
             addResultList(orf, resultSet.getInt("orf_id"));
         }
 
-        //query.setOrfList(orfList);
-        //TODO addORfList asks for an ORF, not an ArrayList
+        query.setOrfList(orfList);
     }
 
     /**
@@ -117,8 +115,7 @@ public class Connector {
             resultList.add(result);
         }
 
-        //result.setResultList(resultList);
-        //TODO no set method for resultList
+        orf.setResultList(resultList);
     }
 
     /**

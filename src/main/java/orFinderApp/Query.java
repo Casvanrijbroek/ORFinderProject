@@ -79,6 +79,15 @@ public class Query {
     }
 
     /**
+     * Sets orfList
+     *
+     * @param orfList orfList to be set
+     */
+    public void setOrfList(ArrayList<ORF> orfList) {
+        this.orfList = orfList;
+    }
+
+    /**
      * Add another Orf object to the query
      *
      * @param newOrf ORF object to add
