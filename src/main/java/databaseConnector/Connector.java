@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Using this class you can retrieve data from the database by submitting queries or make specific changes.
  *
  * @author Cas van Rijbroek
- * @version 1.1
+ * @version 1.2
  */
 public class Connector {
     /**
@@ -195,6 +195,12 @@ public class Connector {
         statement.close();
     }
 
+    /** Inserts an ORF into the database.
+     *
+     * @param orf the orf that is to be inserted
+     * @param headerIdentifier the foreign key for the header belonging to the orf
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
     private void insertORF(ORF orf, int headerIdentifier) throws SQLException {
         Statement statement;
         int newIdentifier;
@@ -212,6 +218,13 @@ public class Connector {
         }
     }
 
+    /**
+     * Inserts a Result into the database.
+     *
+     * @param result the result that is to be inserted
+     * @param orfIdentifier the foreign key for the orf belonging to the result
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
     private void insertResult(Result result, int orfIdentifier) throws SQLException {
         Statement statement;
         int newIdentifier;
@@ -225,15 +238,39 @@ public class Connector {
                 result.getStartPosition(), result.getStopPosition()));
     }
 
+    /**
+     * Checks if a certain query exists in the database based on the header.
+     *
+     * @param header the header that you want to use
+     * @return true if the query exists in the database, else false
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
     private boolean queryExists(String header) throws SQLException {
         return connection.createStatement().executeQuery(
                 String.format("SELECT name FROM header WHERE name = '%s'", header)).next();
     }
 
+    /**
+     * Checks if a certain query exists in the database based on the header. This method overloads the method that
+     * checks this and instead accepts a Query object. It extracts the header from the Query.
+     *
+     * @param query the query containing the header that you want to use
+     * @return true if the query exists in the database, else false
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
     private boolean queryExists(Query query) throws SQLException {
         return queryExists(query.getHeader());
     }
 
+    /**
+     * Gets the maximum identifier of a table in the database and adds 1 to that number, creating a new unique
+     * identifier to insert a new attribute with.
+     *
+     * @param id the id attribute that is to be searched on
+     * @param table the table containing the id that is to be searched on
+     * @return the new unique identifier
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
     private int getNewIdentifier(String id, String table) throws SQLException {
         ResultSet resultSet;
         Statement statement;
@@ -262,22 +299,12 @@ public class Connector {
                 "LEFT JOIN result on orf_id = ORF_orf_id " +
                 "WHERE %s = '%s'";
 
-        tempMustUse();
         checkConnection();
 
         statement = connection.createStatement();
         statement.executeUpdate(String.format(deleteCommand, "result", searchOption, value));
         statement.executeUpdate(String.format(deleteCommand, "orf", searchOption, value));
         statement.executeUpdate(String.format(deleteCommand, "header", searchOption, value));
-        statement.close();
-    }
-
-    void tempMustUse() throws SQLException {
-        Statement statement;
-        statement = connection.createStatement();
-        statement.executeUpdate("INSERT INTO header VALUES (4, 'delete this', 'ATCG')");
-        statement.executeUpdate("INSERT INTO orf VALUES(4, 1, 10, 4)");
-        statement.executeUpdate("INSERT INTO result VALUES(4, 4, 'ACC', 'desc', 10, 30, 1, 10, 1, 10)");
         statement.close();
     }
 

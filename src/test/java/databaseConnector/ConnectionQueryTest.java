@@ -85,7 +85,7 @@ public class ConnectionQueryTest {
     }
 
     @After
-    public void closeConnection() throws SQLException {
+    public void closeConnection() throws SQLException, ConnectionException {
         connector.closeConnection();
     }
 }
