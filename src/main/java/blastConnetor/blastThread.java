@@ -81,15 +81,10 @@ public class blastThread extends Thread{
             System.out.println("blastcomplete");
             InputStream in = service.getAlignmentResults("8ZAPDFPA015", outputProps);
             reader = new BufferedReader(new InputStreamReader(in));
-       //     new saveBlastToResults().saveBlastToResults(in, this.occOrf, 5);
-
             StringBuilder newXML = new StringBuilder();
-
-            System.out.println("\\/ deez \\/");
             String line;
             while ((line = reader.readLine()) != null) {
                 newXML.append(line);
-                System.out.println(line);
             }
             new saveBlastToResults().saveBlastToResults(newXML.toString(), occOrf, 5);
         } catch (InterruptedException e) {
