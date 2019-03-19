@@ -27,9 +27,9 @@ public class testClass {
     public static void main(String[] args) {
         Query query = new Query("test header", SEQ);
         ORF newOrf = new ORF(400, 600);
-        ORF newOrf2 = new ORF(50, 400);
+        //ORF newOrf2 = new ORF(50, 400);
         query.addOrfList(newOrf);
-        query.addOrfList(newOrf2);
+        //query.addOrfList(newOrf2);
         proteinBlast testBlast = new proteinBlast();
         testBlast.proteinBlast(query);
         testBlast.blast();

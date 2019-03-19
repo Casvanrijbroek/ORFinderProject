@@ -1,5 +1,6 @@
 package orFinderApp;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ORF {
@@ -72,5 +73,14 @@ public class ORF {
      */
     public void clearResultList() {
         resultList = null;
+    }
+
+    public Result addResult(){
+        this.resultList.add(new Result());
+        return this.resultList.get(resultList.size() - 1);
+    }
+
+    public void setResultList(ArrayList<Result> resultList){
+        this.resultList = resultList;
     }
 }

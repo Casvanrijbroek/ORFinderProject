@@ -67,31 +67,30 @@ public class blastThread extends Thread{
      * Runs BLAST thread
      */
     public void run() {
-        rid = new String();
+//        rid = new String();
         try {
-            rid = service.sendAlignmentRequest(this.sequence, props);
-            System.out.println(rid);
-            while (!service.isReady(rid)) {
-                //todo write timeout handeling
-                System.out.println("ï be flossin...");
-                Thread.sleep(5000/amThreads);
-            }
+//            rid = service.sendAlignmentRequest(this.sequence, props);
+//            System.out.println(rid);
+//            System.out.println(amThreads);
+//            while (!service.isReady(rid)) {
+//                //todo write timeout handeling
+//                System.out.println("ï be flossin...");
+//                Thread.sleep(5000/amThreads);
+//            }
+
             System.out.println("blastcomplete");
-            InputStream in = service.getAlignmentResults(rid, outputProps);
+            InputStream in = service.getAlignmentResults("8ZAPDFPA015", outputProps);
             reader = new BufferedReader(new InputStreamReader(in));
+       //     new saveBlastToResults().saveBlastToResults(in, this.occOrf, 5);
 
+            StringBuilder newXML = new StringBuilder();
 
-            // write blast output to specified file
-            String path = "src" + File.separator + "main" + File.separator + "java" + File.separator + "test" + File.separator + "saveFiles" + File.separator + "newFile" + String.valueOf(rid);
-            File f = new File(path);
-            System.out.println(f.getCanonicalPath());
-            System.out.println("Saving query results in file " + f.getAbsolutePath());
-            writer = new FileWriter(f);
-
+            System.out.println("\\/ deez \\/");
             String line;
             while ((line = reader.readLine()) != null) {
-                writer.write(line + System.getProperty("line.separator"));
+                newXML.append(line);
             }
+            new saveBlastToResults().saveBlastToResults(newXML.toString(), occOrf, 5);
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         } catch (java.io.IOException e){
@@ -105,7 +104,9 @@ public class blastThread extends Thread{
         }
     }
 
-
+    /**
+     * Start Thread of blastThread instance. Creates new thread and runs Blast.
+     */
     @Override
     public void start() {
         if (threadOcc == null) {
@@ -143,8 +144,11 @@ public class blastThread extends Thread{
          */
         outputProps.setOutputFormat(BlastOutputFormatEnum.XML);
         /**
+         * Doesn't quite work, still working on BioJava docs
          * 5 Best hits are returned
          */
+        //todo Biojava parametrs werken nog niet
         outputProps.setAlignmentNumber(1);
-    }
+
+        }
 }

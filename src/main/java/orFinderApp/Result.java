@@ -2,6 +2,10 @@ package orFinderApp;
 
 public class Result {
 
+    public Result(){
+
+    }
+
     /**
      * accession code of the result
      */
@@ -30,7 +34,7 @@ public class Result {
     /**
      * identity percentage of the result
      */
-    private float identity;
+    private int identity;
 
     /**
      * startPosition of the result
@@ -137,7 +141,7 @@ public class Result {
      *
      * @return value of identity
      */
-    public float getIdentity() {
+    public int getIdentity() {
         return identity;
     }
 
@@ -146,7 +150,7 @@ public class Result {
      *
      * @param identity sets this value into the class variable
      */
-    public void setIdentity(float identity) {
+    public void setIdentity(int identity) {
         this.identity = identity;
     }
 

@@ -10,6 +10,15 @@ public class Query {
     private ArrayList<ORF> orfList;
 
     /**
+     * Gets header
+     *
+     * @return value of header
+     */
+    public String getHeader() {
+        return header;
+    }
+
+    /**
      * Header of the result
      */
     private String header;
@@ -80,4 +89,5 @@ public class Query {
         }
         orfList.add(newOrf);
     }
+
 }
