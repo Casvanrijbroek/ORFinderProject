@@ -1,18 +1,18 @@
 package databaseConnector;
 
 /**
- * This exception can be thrown to indicate the mishandling of a connection.
- * For example the calling of a method that requires a connection while no connection is present.
+ * This exception can be thrown to indicate the execution of a query that attempts to delete a non-existent item from
+ * the database.
  *
  * @author Cas van Rijbroek
  * @version 1.0
  */
-class ConnectionException extends Exception {
+public class InvalidDeletionException extends Exception {
 
     /**
      * The default constructor to call its super class
      */
-    ConnectionException() {
+    InvalidDeletionException() {
         super();
     }
 
@@ -21,7 +21,7 @@ class ConnectionException extends Exception {
      *
      * @param message The message that is to be added
      */
-    ConnectionException(String message) {
+    InvalidDeletionException(String message) {
         super(message);
     }
 }
