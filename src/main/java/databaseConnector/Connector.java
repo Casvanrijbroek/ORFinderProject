@@ -1,6 +1,8 @@
 package databaseConnector;
 
-import orFinderApp.*;
+import orFinderApp.ORF;
+import orFinderApp.Query;
+import orFinderApp.Result;
 
 import java.sql.*;
 import java.util.ArrayList;

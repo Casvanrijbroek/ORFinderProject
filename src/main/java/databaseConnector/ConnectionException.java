@@ -8,7 +8,7 @@ package databaseConnector;
  * @author Cas van Rijbroek
  * @version 1.0
  */
-class ConnectionException extends Exception {
+public class ConnectionException extends Exception {
 
     /**
      * The default constructor to call its super class
