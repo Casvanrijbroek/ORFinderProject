@@ -90,7 +90,6 @@ public class Connector {
      * @param orf the ORF to add the ORFs to
      * @param orfID the orf id of the header to get Results from
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     * @throws ConnectionException if the method is called without establishing a connection first
      */
     private void addResultList(ORF orf, int orfID) throws SQLException {
         ArrayList<Result> resultList;
@@ -109,12 +108,13 @@ public class Connector {
             result.setAccession(resultSet.getString("accession"));
             result.setDescription(resultSet.getString("description"));
             result.setScore(resultSet.getInt("score"));
-            //result.setQueryCover(resultSet.getFloat("query_cover"));
-            //TODO float in db int in Result
+            result.setQueryCover(resultSet.getInt("query_cover"));
             result.setpValue(resultSet.getFloat("p_value"));
-            result.setIdentity(resultSet.getFloat("ident"));
+            result.setIdentity(resultSet.getInt("ident"));
             result.setStartPosition(resultSet.getInt("start_pos"));
             result.setStopPosition(resultSet.getInt("stop_pos"));
+
+            resultList.add(result);
         }
 
         //result.setResultList(resultList);
