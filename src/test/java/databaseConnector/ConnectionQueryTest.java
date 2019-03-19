@@ -1,11 +1,15 @@
 package databaseConnector;
 
+import orFinderApp.ORF;
+import orFinderApp.Query;
+import orFinderApp.Result;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -41,9 +45,28 @@ public class ConnectionQueryTest {
     }
 
     @Test
-    @Disabled
-    public void insertQuery() {
+    public void insertQuery() throws SQLException, ConnectionException {
+        Query query = new Query("delete this", "ATCG");
+        ORF orf = new ORF(1, 10);
+        Result result = new Result();
+        ArrayList<ORF> orfList = new ArrayList<>();
+        ArrayList<Result> resultList = new ArrayList<>();
 
+        result.setAccession("ACCESSION10");
+        result.setDescription("delete this");
+        result.setScore(10);
+        result.setQueryCover(20);
+        result.setpValue(0.001f);
+        result.setIdentity(30);
+        result.setStartPosition(1);
+        result.setStopPosition(10);
+
+        query.setOrfList(orfList);
+        orfList.add(orf);
+        orf.setResultList(resultList);
+        resultList.add(result);
+
+        connector.insertQuery(query);
     }
 
     @Test

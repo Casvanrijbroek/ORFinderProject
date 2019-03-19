@@ -2,7 +2,8 @@ package databaseConnector;
 
 /**
  * This exception can be thrown to indicate the mishandling of a connection.
- * For example the calling of a method that requires a connection while no connection is present.
+ * For example the calling of a method that requires a connection while no connection is present or inserting a value
+ * that already exists.
  *
  * @author Cas van Rijbroek
  * @version 1.0

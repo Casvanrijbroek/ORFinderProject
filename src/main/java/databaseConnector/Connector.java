@@ -165,11 +165,84 @@ public class Connector {
      *
      * @param query the Query that is to be inserted into the database
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     * @throws ConnectionException if the method is called without establishing a connection first
+     * @throws ConnectionException if the method is called without establishing a connection first or when the given
+     * query already exists in the database.
      */
     public void insertQuery(Query query) throws SQLException, ConnectionException {
+        Statement statement;
+        int newIdentifier;
+
         checkConnection();
-        //TODO Query must have a getHeader method
+
+        statement = connection.createStatement();
+        newIdentifier = getNewIdentifier("header_id", "header");
+
+        if (queryExists(query)) {
+            throw new ConnectionException("This query already exists in the database\n" +
+                    "Please remove it from the database or change the name of the header");
+        }
+
+        statement.executeUpdate(String.format(
+                "INSERT INTO header VALUES (%d, '%s', '%s')",
+                newIdentifier, query.getHeader(), query.getSequence()));
+
+        if (query.getOrfList() != null) {
+            for (ORF orf : query.getOrfList()) {
+                insertORF(orf, newIdentifier);
+            }
+        }
+
+        statement.close();
+    }
+
+    private void insertORF(ORF orf, int headerIdentifier) throws SQLException {
+        Statement statement;
+        int newIdentifier;
+
+        statement = connection.createStatement();
+        newIdentifier = getNewIdentifier("orf_id", "orf");
+
+        statement.executeUpdate(String.format("INSERT INTO orf VALUES (%d, '%s', '%s', %d)",
+                newIdentifier, orf.getStartPosition(), orf.getStopPosition(), headerIdentifier));
+
+        if (orf.getResultList() != null) {
+            for (Result result : orf.getResultList()) {
+                insertResult(result, newIdentifier);
+            }
+        }
+    }
+
+    private void insertResult(Result result, int orfIdentifier) throws SQLException {
+        Statement statement;
+        int newIdentifier;
+
+        statement = connection.createStatement();
+        newIdentifier = getNewIdentifier("result_id", "result");
+
+        statement.executeUpdate(String.format("INSERT INTO result VALUES (%d, %d, '%s', '%s', %d, %d, %s, %d, %d, %d)",
+                newIdentifier, orfIdentifier, result.getAccession(), result.getDescription(), result.getScore(),
+                result.getQueryCover(), String.valueOf(result.getpValue()), result.getIdentity(),
+                result.getStartPosition(), result.getStopPosition()));
+    }
+
+    private boolean queryExists(String header) throws SQLException {
+        return connection.createStatement().executeQuery(
+                String.format("SELECT name FROM header WHERE name = '%s'", header)).next();
+    }
+
+    private boolean queryExists(Query query) throws SQLException {
+        return queryExists(query.getHeader());
+    }
+
+    private int getNewIdentifier(String id, String table) throws SQLException {
+        ResultSet resultSet;
+        Statement statement;
+
+        statement = connection.createStatement();
+        resultSet = statement.executeQuery(String.format("SELECT MAX(%s)+1 max_id FROM %s", id, table));
+        resultSet.next();
+
+        return resultSet.getInt("max_id");
     }
 
     /**
