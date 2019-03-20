@@ -1,9 +1,14 @@
 package orFinderApp;
 
+import ORFinderGUI.ORFinderGui;
 import databaseConnector.ConnectionException;
 import databaseConnector.Connector;
 import databaseConnector.SearchOption;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 
 /**
@@ -15,7 +20,7 @@ import java.sql.SQLException;
  * to scale the application to handle more queries at once.
  *
  * @author Cas van Rijbroek
- * @version 0.0
+ * @version 0.1
  */
 public class ORFinderApp {
     /**
@@ -34,6 +39,19 @@ public class ORFinderApp {
      * @param args no args are expected to be given since this application is not designed for command line usage
      */
     public static void main(String[] args) {
+        try {
+            ORFinderGui gui = new ORFinderGui();
+            JFrame frame = new JFrame();
+            frame.setContentPane(gui.getGui());
+            ORFinderGui.getImagePath();
+            frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
+                    Paths.get("src", "main", "resources")+ File.separator+"icon.jpg"));
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.pack();
+            frame.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
     /**
