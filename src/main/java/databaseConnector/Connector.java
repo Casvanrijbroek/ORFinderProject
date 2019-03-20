@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Using this class you can retrieve data from the database by submitting queries or make specific changes.
  *
  * @author Cas van Rijbroek
- * @version 1.2
+ * @version 1.3
  */
 public class Connector {
     /**
