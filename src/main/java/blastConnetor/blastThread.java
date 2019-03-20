@@ -10,50 +10,65 @@ import java.io.*;
 import java.net.ConnectException;
 import java.util.ArrayList;
 
+/**
+ * This Class creates a new Thread and start a new session to Blast the given ORFs.
+ *
+ * @author Lex Bosch
+ * @version 1.0
+ */
 
-public class blastThread extends Thread{
+public class blastThread extends Thread {
 
+    private static String noNetworkError = "Het is niet mogelijik om de" +
+            " resultaten op te halen vanuit de NCBI servers. Kijk of u een connectie heeft met het" +
+            " internet en probeer het later opnieuw. Als dit probleem blijvend is, " +
+            "neem contact op met netwerkbeheer";
+
+    /**
+     * Amount of threads running at the same time.
+     */
     private static int RunningThreads = 0;
 
+    /**
+     * Amount of times exception has been called regarding connection issue.
+     */
     private static int countEx = 0;
 
-    private static int amThreads = 0;
     /**
-     * Thread of this occurence
+     * Thread of this occurrence.
      */
     private Thread threadOcc;
 
     /**
-     * Protein sequence of this occurence
+     * Protein sequence of this occurence.
      */
     private String sequence;
 
     /**
-     * Bufferreader for writing of the results
+     * Bufferreader for writing of the results.
      */
     private BufferedReader reader;
 
     /**
-     * Filewriter for writing of the results
-     */
-    private FileWriter writer;
-
-    /**
-     * String containing the code of the BLAST
+     * String containing the id of the BLAST.
      */
     private String rid;
+
     /**
      * Initialise service variable
      */
     private NCBIQBlastService service;
+
     /**
      * Initialise propterty variable.
      */
     private NCBIQBlastAlignmentProperties props;
+
     /**
      * Initialise output properties variable
      */
     private NCBIQBlastOutputProperties outputProps;
+
     //todo comments
     //Might remove
     private ORF occOrf;
@@ -64,33 +79,42 @@ public class blastThread extends Thread{
     /**
      * Creates BLAST thread and sets parameters
      *
-     * @param subSequence
-     * @param occOrf
+     * @param subSequence String containing the sequence to Blast.
+     * @param occOrf ORF to be filled.
+     * @param occQuery Query to be filled.
      */
     blastThread(String subSequence, ORF occOrf, Query occQuery) {
         this.RunningThreads++;
         this.sequence = subSequence;
         this.occOrf = occOrf;
         this.occQuery = occQuery;
-        amThreads++;
         settings();
+    }
+
+    /**
+     * Gets RunningThreads
+     *
+     * @return value of RunningThreads
+     */
+    public static int getRunningThreads() {
+        return RunningThreads;
     }
 
     /**
      * Runs BLAST thread
      */
-    public void run(){
-        rid = new String();
-//        rid = "940EEM65015";
+    public void run() {
+//        rid = new String();
+        rid = "940EEM65015";
         try {
-            //todo Uncomment
-            rid = service.sendAlignmentRequest(this.sequence, props);
-            //System.out.println(rid);
-            while (!service.isReady(rid)) {
-                //todo write timeout handeling
-                System.out.println("ï be flossin...");
-                Thread.sleep(5000/amThreads);
-            }
+                //todo Uncomment
+//                rid = service.sendAlignmentRequest(this.sequence, props);
+                System.out.println(rid);
+//            while (!service.isReady(rid)) {
+//                //todo write timeout handeling
+//                System.out.println("ï be flossin...");
+//                Thread.sleep(9000 / this.RunningThreads);
+//            }
 
             System.out.println("blastcomplete");
             InputStream in = service.getAlignmentResults(rid, outputProps);
@@ -106,17 +130,21 @@ public class blastThread extends Thread{
             RunningThreads--;
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
+            RunningThreads--;
         } catch (java.io.IOException e) {
-            System.out.println(e.getMessage());
-        }catch (java.lang.Exception e){
+            RunningThreads--;
             countEx++;
-            System.out.println(e.getMessage());
-            if(countEx == 1){
-                JOptionPane.showMessageDialog(null, "Het is niet mogelijik om de" +
-                        " resultaten op te halen vanuit de NCBI servers. Kijk of u een connectie heeft met het" +
-                        " internet en probeer het later opnieuw. Als dit probleem blijvend is, " +
-                        "neem contact op met netwerkbeheer");
+            if (countEx == 1) {
+                JOptionPane.showMessageDialog(null, noNetworkError);
             }
+        } catch (java.lang.Exception e) {
+            countEx++;
+            RunningThreads--;
+            if (countEx == 1) {
+                JOptionPane.showMessageDialog(null, noNetworkError);
+            }
+        } finally {
+            Thread.currentThread().stop();
         }
     }
 
@@ -124,7 +152,7 @@ public class blastThread extends Thread{
      * Start Thread of blastThread instance. Creates new thread and runs Blast.
      */
     @Override
-    public void start(){
+    public void start() {
         if (threadOcc == null) {
             threadOcc = new Thread(this);
             threadOcc.start();
@@ -166,15 +194,5 @@ public class blastThread extends Thread{
         //todo Biojava parametrs werken nog niet
         outputProps.setAlignmentNumber(1);
 
-    }
-
-
-    /**
-     * Gets RunningThreads
-     *
-     * @return value of RunningThreads
-     */
-    public static int getRunningThreads() {
-        return RunningThreads;
     }
 }

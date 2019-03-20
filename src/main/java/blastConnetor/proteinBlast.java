@@ -5,6 +5,13 @@ import orFinderApp.Query;
 
 import java.util.ArrayList;
 
+/**
+ * This Class calls Threads for each of the ORFs in the given query and waits for all the Blasts to be done.
+ *
+ * @author Lex Bosch
+ * @version 1.0
+ */
+
 public class proteinBlast {
 
     /**
@@ -42,6 +49,7 @@ public class proteinBlast {
      * https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=DeveloperInfo
      * for more info.
      * DO NOT REMOVE DELAY
+     * @throws InterruptedException Throws exception when sleep is interupted
      */
     public void blast() throws NoBlastConnectionException, InterruptedException {
         blastList = new ArrayList<blastThread>();
@@ -51,7 +59,7 @@ public class proteinBlast {
             Thread.sleep(10500);
         }
         System.out.println("Alle Threads zijn bezig");
-        while ( !(blastThread.getRunningThreads() == 0)){
+        while (!(blastThread.getRunningThreads() == 0)) {
             Thread.sleep(2000);
         }
     }
