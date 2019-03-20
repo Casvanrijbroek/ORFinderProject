@@ -1,13 +1,21 @@
 package blastConnetor;
 
 import orFinderApp.ORF;
+import orFinderApp.Query;
+import orFinderApp.Result;
 import org.biojava.nbio.ws.alignment.qblast.*;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.ConnectException;
+import java.util.ArrayList;
 
 
-public class blastThread extends Thread {
+public class blastThread extends Thread{
+
+    private static int RunningThreads = 0;
+
+    private static int countEx = 0;
 
     private static int amThreads = 0;
     /**
@@ -50,15 +58,20 @@ public class blastThread extends Thread {
     //Might remove
     private ORF occOrf;
 
+
+    private Query occQuery;
+
     /**
      * Creates BLAST thread and sets parameters
      *
      * @param subSequence
      * @param occOrf
      */
-    blastThread(String subSequence, ORF occOrf) {
+    blastThread(String subSequence, ORF occOrf, Query occQuery) {
+        this.RunningThreads++;
         this.sequence = subSequence;
         this.occOrf = occOrf;
+        this.occQuery = occQuery;
         amThreads++;
         settings();
     }
@@ -66,19 +79,18 @@ public class blastThread extends Thread {
     /**
      * Runs BLAST thread
      */
-    public void run() {
-//        rid = new String();
-        rid = "8ZAPDFPA015";
+    public void run(){
+        rid = new String();
+//        rid = "940EEM65015";
         try {
             //todo Uncomment
-//            rid = service.sendAlignmentRequest(this.sequence, props);
-//            System.out.println(rid);
-//            System.out.println(amThreads);
-//            while (!service.isReady(rid)) {
-//                //todo write timeout handeling
-//                System.out.println("ï be flossin...");
-//                Thread.sleep(5000/amThreads);
-//            }
+            rid = service.sendAlignmentRequest(this.sequence, props);
+            //System.out.println(rid);
+            while (!service.isReady(rid)) {
+                //todo write timeout handeling
+                System.out.println("ï be flossin...");
+                Thread.sleep(5000/amThreads);
+            }
 
             System.out.println("blastcomplete");
             InputStream in = service.getAlignmentResults(rid, outputProps);
@@ -88,17 +100,23 @@ public class blastThread extends Thread {
             while ((line = reader.readLine()) != null) {
                 newXML.append(line);
             }
-            new saveBlastToResults().saveBlastToResults(newXML.toString(), occOrf, 5);
+            ArrayList<Result> resultList = new ArrayList<>();
+            resultList = new saveBlastToResults().saveBlastToResults(newXML.toString(), occOrf, 5);
+            occOrf.setResultList(resultList);
+            RunningThreads--;
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         } catch (java.io.IOException e) {
             System.out.println(e.getMessage());
-        } catch (Exception e) {
-            System.out.println(e);
-            //todo Propper exception handling
-            System.out.println("javalangexception");
+        }catch (java.lang.Exception e){
+            countEx++;
             System.out.println(e.getMessage());
-
+            if(countEx == 1){
+                JOptionPane.showMessageDialog(null, "Het is niet mogelijik om de" +
+                        " resultaten op te halen vanuit de NCBI servers. Kijk of u een connectie heeft met het" +
+                        " internet en probeer het later opnieuw. Als dit probleem blijvend is, " +
+                        "neem contact op met netwerkbeheer");
+            }
         }
     }
 
@@ -106,7 +124,7 @@ public class blastThread extends Thread {
      * Start Thread of blastThread instance. Creates new thread and runs Blast.
      */
     @Override
-    public void start() {
+    public void start(){
         if (threadOcc == null) {
             threadOcc = new Thread(this);
             threadOcc.start();
@@ -148,5 +166,15 @@ public class blastThread extends Thread {
         //todo Biojava parametrs werken nog niet
         outputProps.setAlignmentNumber(1);
 
+    }
+
+
+    /**
+     * Gets RunningThreads
+     *
+     * @return value of RunningThreads
+     */
+    public static int getRunningThreads() {
+        return RunningThreads;
     }
 }

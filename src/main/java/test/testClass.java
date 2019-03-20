@@ -1,5 +1,6 @@
 package test;
 
+import blastConnetor.NoBlastConnectionException;
 import blastConnetor.proteinBlast;
 import orFinderApp.ORF;
 import orFinderApp.Query;
@@ -27,11 +28,22 @@ public class testClass {
     public static void main(String[] args) {
         Query query = new Query("test header", SEQ);
         ORF newOrf = new ORF(400, 600);
-        //ORF newOrf2 = new ORF(50, 400);
+        ORF newOrf2 = new ORF(50, 400);
         query.addOrfList(newOrf);
-        //query.addOrfList(newOrf2);
+        query.addOrfList(newOrf2);
         proteinBlast testBlast = new proteinBlast();
         testBlast.proteinBlast(query);
-        testBlast.blast();
+
+        try {
+            System.out.println("Threads worden aangezet");
+            testBlast.blast();
+            System.out.println("Alle Threads zijn klaar");
+
+        } catch (NoBlastConnectionException nbce){
+
+        } catch (InterruptedException e){
+            System.out.println(e.getMessage());
+        }
+
     }
 }
