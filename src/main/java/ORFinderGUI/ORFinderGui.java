@@ -10,7 +10,11 @@ import java.io.*;
 import java.util.regex.Pattern;
 
 public class ORFinderGui extends Component {
-    public JPanel Gui;
+    public JPanel getGui() {
+        return gui;
+    }
+
+    public JPanel gui;
     private JTextField filepathTextField;
     private JButton browseButton;
     private JButton berekenButton;
@@ -25,7 +29,7 @@ public class ORFinderGui extends Component {
 
     public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         JFrame frame = new JFrame();
-        frame.setContentPane(new ORFinderGui().Gui);
+        frame.setContentPane(new ORFinderGui().gui);
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(imagePad + "icon.jpg"));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
