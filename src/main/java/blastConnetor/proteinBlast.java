@@ -28,9 +28,10 @@ public class proteinBlast {
      *
      * @param query input query to be BLASTed
      */
-    public void proteinBlast(Query query) {
+    public void proteinBlast(Query query) throws NoBlastConnectionException, InterruptedException  {
         this.occQuery = query;
         this.queryString = this.occQuery.getSequence();
+        this.blast();
     }
 
 
@@ -43,7 +44,7 @@ public class proteinBlast {
      * for more info.
      * DO NOT REMOVE DELAY
      */
-    public void blast() throws NoBlastConnectionException, InterruptedException {
+    private void blast() throws NoBlastConnectionException, InterruptedException {
         blastList = new ArrayList<blastThread>();
         for (ORF occOrf : occQuery.getOrfList()) {
             blastList.add(new blastThread(queryString.substring(occOrf.getStartPosition(), occOrf.getStopPosition()), occOrf, occQuery));

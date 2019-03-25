@@ -32,11 +32,10 @@ public class testClass {
         query.addOrfList(newOrf);
         query.addOrfList(newOrf2);
         proteinBlast testBlast = new proteinBlast();
-        testBlast.proteinBlast(query);
 
         try {
             System.out.println("Threads worden aangezet");
-            testBlast.blast();
+            testBlast.proteinBlast(query);
             System.out.println("Alle Threads zijn klaar");
 
         } catch (NoBlastConnectionException nbce){

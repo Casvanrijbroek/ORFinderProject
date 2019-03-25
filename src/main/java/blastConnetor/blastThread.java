@@ -67,7 +67,7 @@ public class blastThread extends Thread{
      * @param subSequence
      * @param occOrf
      */
-    blastThread(String subSequence, ORF occOrf, Query occQuery) {
+    public blastThread(String subSequence, ORF occOrf, Query occQuery) {
         this.RunningThreads++;
         this.sequence = subSequence;
         this.occOrf = occOrf;
