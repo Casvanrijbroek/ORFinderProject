@@ -35,7 +35,7 @@ public class testClass {
 
         try {
             System.out.println("Threads worden aangezet");
-            testBlast.proteinBlast(query);
+            testBlast.blast(query);
             System.out.println("Alle Threads zijn klaar");
 
         } catch (NoBlastConnectionException nbce){
