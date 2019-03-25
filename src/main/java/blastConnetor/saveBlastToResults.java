@@ -33,6 +33,9 @@ public class saveBlastToResults {
         }
 
         ArrayList<Result> resultList = new ArrayList<>();
+        if(allMatches.size() < amResults){
+            amResults = allMatches.size();
+        }
         for (int countHit = 0; countHit < amResults; countHit++) {
             resultList.add(hitsToResults(allMatches.get(countHit), OrfSave));
         }
