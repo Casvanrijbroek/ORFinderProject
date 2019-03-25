@@ -109,7 +109,7 @@ public class Connector {
             result.setDescription(resultSet.getString("description"));
             result.setScore(resultSet.getInt("score"));
             result.setQueryCover(resultSet.getInt("query_cover"));
-            result.setpValue(resultSet.getFloat("p_value"));
+            result.setpValue(resultSet.getFloat("e_value"));
             result.setIdentity(resultSet.getInt("ident"));
             result.setStartPosition(resultSet.getInt("start_pos"));
             result.setStopPosition(resultSet.getInt("stop_pos"));
