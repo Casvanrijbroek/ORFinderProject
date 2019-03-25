@@ -43,7 +43,7 @@ public class ORFinderApp {
             ORFinderGui gui = new ORFinderGui();
             JFrame frame = new JFrame();
             frame.setContentPane(gui.getGui());
-            //ORFinderGui.getImagePath();
+            ORFinderGui.getImagePath();
             frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
                     Paths.get("src", "main", "resources")+ File.separator+"icon.jpg"));
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
