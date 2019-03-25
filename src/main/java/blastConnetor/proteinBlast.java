@@ -2,6 +2,7 @@ package blastConnetor;
 
 import orFinderApp.ORF;
 import orFinderApp.Query;
+import orFinderApp.Result;
 
 import java.util.ArrayList;
 
@@ -28,10 +29,21 @@ public class proteinBlast {
      *
      * @param query input query to be BLASTed
      */
-    public void blast(Query query) throws NoBlastConnectionException, InterruptedException  {
+    public int blast(Query query) throws NoBlastConnectionException, InterruptedException  {
         this.occQuery = query;
         this.queryString = this.occQuery.getSequence();
         this.proteinBlast();
+        return checkResults(query);
+    }
+
+
+    private int checkResults(Query query){
+        ArrayList<ORF> ORFList = query.getOrfList();
+        int amResults = 0;
+        for(ORF orfs : ORFList){
+            amResults += orfs.getResultList().size();
+        }
+        return amResults;
     }
 
 
