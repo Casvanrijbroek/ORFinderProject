@@ -20,7 +20,7 @@ import java.sql.SQLException;
  * to scale the application to handle more queries at once.
  *
  * @author Cas van Rijbroek
- * @version 0.1
+ * @version 0.2
  */
 public class ORFinderApp {
     /**
@@ -43,9 +43,8 @@ public class ORFinderApp {
             ORFinderGui gui = new ORFinderGui();
             JFrame frame = new JFrame();
             frame.setContentPane(gui.getGui());
-            ORFinderGui.getImagePath();
             frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
-                    Paths.get("src", "main", "resources")+ File.separator+"icon.jpg"));
+                    Paths.get("src", "main", "resources", "icon.jpg").toString()));
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.pack();
             frame.setVisible(true);
