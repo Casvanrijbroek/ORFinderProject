@@ -10,13 +10,29 @@ import java.io.*;
 import java.net.ConnectException;
 import java.util.ArrayList;
 
+/**
+ * This class contains the Threads using to blast. It starts the Blasting process and waits for the blast to be done
+ * the results are passed to the saveBlastToResults class.
+ *
+ * @author Lex Bosch
+ * @version 1.0
+ */
 
-public class blastThread extends Thread{
+public class blastThread extends Thread {
 
+    /**
+     * Amount of currently running Threads.
+     */
     private static int RunningThreads = 0;
 
+    /**
+     * Counts the amount of exceptions occurred within the session.
+     */
     private static int countEx = 0;
 
+    /**
+     * Amount of total Threads
+     */
     private static int amThreads = 0;
     /**
      * Thread of this occurence
@@ -54,12 +70,10 @@ public class blastThread extends Thread{
      * Initialise output properties variable
      */
     private NCBIQBlastOutputProperties outputProps;
-    //todo comments
-    //Might remove
+    /**
+     * Initialise ORF to be filled
+     */
     private ORF occOrf;
-
-
-    private Query occQuery;
 
     /**
      * Creates BLAST thread and sets parameters
@@ -71,25 +85,30 @@ public class blastThread extends Thread{
         this.RunningThreads++;
         this.sequence = subSequence;
         this.occOrf = occOrf;
-        this.occQuery = occQuery;
         amThreads++;
         settings();
     }
 
     /**
+     * Gets RunningThreads
+     *
+     * @return value of RunningThreads
+     */
+    public static int getRunningThreads() {
+        return RunningThreads;
+    }
+
+    /**
      * Runs BLAST thread
      */
-    public void run(){
+    public void run() {
         rid = new String();
-//        rid = "940EEM65015";
         try {
-            //todo Uncomment
             rid = service.sendAlignmentRequest(this.sequence, props);
-            //System.out.println(rid);
             while (!service.isReady(rid)) {
                 //todo write timeout handeling
                 System.out.println("ï be flossin...");
-                Thread.sleep(5000/amThreads);
+                Thread.sleep(5000 / amThreads);
             }
 
             System.out.println("blastcomplete");
@@ -108,10 +127,10 @@ public class blastThread extends Thread{
             System.out.println(e.getMessage());
         } catch (java.io.IOException e) {
             System.out.println(e.getMessage());
-        }catch (java.lang.Exception e){
+        } catch (java.lang.Exception e) {
             countEx++;
             System.out.println(e.getMessage());
-            if(countEx == 1){
+            if (countEx == 1) {
                 JOptionPane.showMessageDialog(null, "Het is niet mogelijik om de" +
                         " resultaten op te halen vanuit de NCBI servers. Kijk of u een connectie heeft met het" +
                         " internet en probeer het later opnieuw. Als dit probleem blijvend is, " +
@@ -124,7 +143,7 @@ public class blastThread extends Thread{
      * Start Thread of blastThread instance. Creates new thread and runs Blast.
      */
     @Override
-    public void start(){
+    public void start() {
         if (threadOcc == null) {
             threadOcc = new Thread(this);
             threadOcc.start();
@@ -159,22 +178,5 @@ public class blastThread extends Thread{
          * Set output format, xml in this case
          */
         outputProps.setOutputFormat(BlastOutputFormatEnum.XML);
-        /**
-         * Doesn't quite work, still working on BioJava docs
-         * 5 Best hits are returned
-         */
-        //todo Biojava parametrs werken nog niet
-        outputProps.setAlignmentNumber(1);
-
-    }
-
-
-    /**
-     * Gets RunningThreads
-     *
-     * @return value of RunningThreads
-     */
-    public static int getRunningThreads() {
-        return RunningThreads;
     }
 }
