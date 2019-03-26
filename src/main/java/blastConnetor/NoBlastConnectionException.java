@@ -21,7 +21,7 @@ public class NoBlastConnectionException extends Exception {
      *
      * @param message The message that is to be added
      */
-    NoBlastConnectionException(String message) {
+    public NoBlastConnectionException(String message) {
         super(message);
     }
 }

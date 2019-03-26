@@ -50,7 +50,7 @@ public class proteinBlast {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new NoBlastConnectionException("No connection can be established with the internet." +
+            throw new NoBlastConnectionException("No connection can be established with the internet.\n" +
                     " Please make sure you have an adequate internet connection and try again later");
         }
     }
