@@ -1,46 +1,93 @@
 package OrfFinderFinder;
 
+import orFinderApp.ORF;
 import orFinderApp.Query;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 public class OrfFinderFinder {
 
-    static final String regex = "(ATG)([ATCGN]{3})*?(TGA|TAG|TAA)";
-    static final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+    final static String startCodon = "ATG";
+    final static String stop1Codon = "TAA";
+    final static String stop2Codon = "TGA";
+    final static String stop3Codon = "TAG";
 
-    //public static String Sequence = "ATGGTGTTGATGTGTGTGNTGTGGATGGTGTGTGTGTGTGTGTGTGTTGTGTTGTGTGTACGTGCATAGCTAGCTCGATCGTCGATCGATCGATGATTGCGTATATAATGCGCGTGACTGACTACGTACGGGGGGGGGGGGGGGGGGTGTGTATGGTGTTGTGTGTGTTGTTAAATGTGATGTACATGATGCACACCCTACCTTCCTAAACTCCTGGGAGCAAGATGACGGTTGTGGACCGTGGAGCGACACGCGACGCTCTGCGTCTCGG";
-    //public static void main(String[] args) {
-    //   HashMap<Integer,String> FoundedOrf = FindOrf(Sequence);
-    //}
+    ArrayList<ORF> ORFresults = new ArrayList<>();
 
-    public static void HanldeQueary(Query sequence) {
-        String ForSeq= sequence.getSequence();
 
-        ArrayList<String> ORFlist = FindOrf("");
+    public void HandleQuery(Query query) {
+
+        ArrayList<String> frames = GenReadingFrame(query.getSequence());
+        for (int frame = 0; frame < frames.size(); frame++) {
+            findGenes(frames.get(frame));
+
+
+        }
+
+    }
+
+
+    public ArrayList<String> findGenes(String frame) {
+
+        ArrayList<String> allGenes = new ArrayList<String>();
+
+        String DNA = frame.toUpperCase();
+        int start = -1;
+        while (true) {
+
+            start = DNA.indexOf(startCodon, start + 1);
+            if (start == -1) {
+                break;
+            }
+
+            int stop = findStopCodon(DNA, start);
+
+            if (stop > start) {
+                String gene = frame.substring(start, stop + 3);
+
+                if (!allGenes.contains(gene)) {
+                    allGenes.add(gene);
+                }
+
+                System.out.println("From: " + start + " to " + stop + " Gene: " + gene);
+            }
+
+        }
+
+        return allGenes;
 
 
     }
 
-    public static ArrayList<String> FindOrf(String Sequence) {
-        ArrayList<String> ORFdata= new ArrayList<>();
 
+    private int findStopCodon(String DNA, int start) {
 
-        final Matcher matcher = pattern.matcher(Sequence);
+        for (int i = start + 3; i < DNA.length() - 3; i += 3) {
 
-        while (matcher.find()) {
-            if (matcher.group(0).length() > 100) {
-                ORFdata.add(matcher.group(0));
+            String frameString = DNA.substring(i, i + 3);
+
+            if (frameString.equals(stop1Codon)) {
+                return i;
+            } else if (frameString.equals(stop2Codon)) {
+                return i;
+
+            } else if (frameString.equals(stop3Codon)) {
+                return i;
             }
-            //System.out.println(Sequence.indexOf(matcher.group(0)));
-            //System.out.println("Full match: " + matcher.group(0));
-            //for (int i = 1; i <= matcher.groupCount(); i++) {
-            //  System.out.println("Group " + i + ": " + matcher.group(i));
-            //}
+
         }
-        return ORFdata;
+        return -1;
+
+    }
+
+
+    private ArrayList<String> GenReadingFrame(String Sequence) {
+        ArrayList<String> frames = new ArrayList();
+
+        String ForSeq = Sequence;
+        String RevSeq = new StringBuilder(Sequence).reverse().toString();
+        frames.add(ForSeq);
+        frames.add(RevSeq);
+        return frames;
     }
 }
