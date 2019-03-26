@@ -37,6 +37,7 @@ public class ORFinderApp {
      * The ProteinBlast object used to BLAST protein sequences via the NCBI BLAST server.
      */
     private proteinBlast proteinBlast;
+    private ORFinderGui orFinderGui;
 
     /**
      * The static main method that sets up the application. This is where the GUI is visualised.
@@ -44,27 +45,28 @@ public class ORFinderApp {
      * @param args no args are expected to be given since this application is not designed for command line usage
      */
     public static void main(String[] args) {
-        try {
-            ORFinderGui gui = new ORFinderGui();
-            JFrame frame = new JFrame();
-            frame.setContentPane(gui.getGui());
-            frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
-                    Paths.get("src", "main", "resources", "icon.jpg").toString()));
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack();
-            frame.setVisible(true);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
+        new ORFinderApp();
     }
 
     /**
      * In this constructor instance variables will be set as needed from the different packages. This includes a
      * Connector object to communicate with the database, ...
      */
-    ORFinderApp() {
+    private ORFinderApp() {
+        JFrame frame;
+
         databaseConnector = new Connector();
         proteinBlast = new proteinBlast();
+        orFinderGui = new ORFinderGui();
+
+        orFinderGui.setORFinderApp(this);
+        frame = new JFrame();
+        frame.setContentPane(orFinderGui.getGui());
+        frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
+                Paths.get("src", "main", "resources", "icon.jpg").toString()));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     /**
@@ -81,7 +83,7 @@ public class ORFinderApp {
      *
      * @return value of query
      */
-    Query getQuery() {
+    public Query getQuery() {
         return query;
     }
 
@@ -92,19 +94,22 @@ public class ORFinderApp {
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value a String with the attribute that is to be searched on
+     * @return true if the fetch was successful, else false
      */
-    public void getQueryDatabase(SearchOption searchOption, String value) {
+    public boolean getQueryDatabase(SearchOption searchOption, String value) {
         try {
             databaseConnector.makeConnection();
             query = databaseConnector.getQuery(searchOption, value);
             databaseConnector.closeConnection();
-
-            //TODO show query in the user interface
         } catch (SQLException err) {
-            //TODO do something with the user interface
+            handleSQLException(err);
+
+            return false;
         } catch (ConnectionException err) {
             //TODO do something with the user interface
         }
+
+        return true;
     }
 
     /**
@@ -113,9 +118,10 @@ public class ORFinderApp {
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value an integer with the identifier that is to be searched on
+     * @return true if the fetch was successful, else false
      */
-    public void getQueryDatabase(SearchOption searchOption, int value) {
-        getQueryDatabase(searchOption, String.valueOf(value));
+    public boolean getQueryDatabase(SearchOption searchOption, int value) {
+        return getQueryDatabase(searchOption, String.valueOf(value));
     }
 
     /**
@@ -187,6 +193,23 @@ public class ORFinderApp {
                 //TODO show in GUI
             }
         }
+    }
+
+    private void handleSQLException(SQLException err) {
+        if (err.getMessage().equals("Illegal operation on empty result set.")) {
+            orFinderGui.setStatusLabel("De opgegeven header heeft niks opgeleverd in de database");
+
+            return;
+        } else if (err.getMessage().contains("Communications link failure")) {
+            orFinderGui.setStatusLabel("Er kon geen connectie gemaakt worden met de database, controleer uw " +
+                    "internetverbinding");
+
+            return;
+        }
+
+        orFinderGui.showPopupError(String.format("Een probleem heeft zich voorgedaan tijdens het ophalen van een " +
+                "resultaat uit de database.\nNeem contact op met het systeembeheer en laat aub de volgende error " +
+                "zien:\nSQLState: %s\nError code: %s\nMessage: %s", err.getSQLState(), err.getErrorCode(), err.getMessage()));
     }
 
     /**

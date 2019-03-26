@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ORFinderGUI.ORFinderGui">
-  <grid id="27dc6" binding="gui" layout-manager="GridLayoutManager" row-count="8" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="gui" layout-manager="GridLayoutManager" row-count="7" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="771" height="400"/>
+      <xy x="20" y="20" width="771" height="502"/>
     </constraints>
     <properties/>
     <border type="line" title="ORFinder">
@@ -44,36 +44,97 @@
           <text value="Bestand laden"/>
         </properties>
       </component>
-      <component id="9e303" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Database resultaten"/>
-        </properties>
-      </component>
       <component id="383d7" class="javax.swing.JComboBox" binding="databaseComboBox">
         <constraints>
           <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
       </component>
-      <component id="c3108" class="javax.swing.JLabel">
+      <component id="c3108" class="javax.swing.JLabel" binding="statusLabel">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Bestand:"/>
+          <text value="Status:"/>
         </properties>
       </component>
-      <component id="f9b38" class="javax.swing.JLabel" binding="bestandLabel">
+      <component id="f9b38" class="javax.swing.JLabel" binding="statusValueLabel">
         <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value=""/>
+          <text value="Laad aub een bestand of resultaten in"/>
         </properties>
       </component>
+      <scrollpane id="594da">
+        <constraints>
+          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <enabled value="true"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="423f1" class="javax.swing.JTable" binding="restultTable">
+            <constraints/>
+            <properties>
+              <autoCreateRowSorter value="true"/>
+              <enabled value="false"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="613b6" binding="databasePanel" layout-manager="GridLayoutManager" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none" title="Data opties"/>
+        <children>
+          <component id="c01f" class="javax.swing.JRadioButton" binding="haalResultaatOpRadioButton" default-binding="true">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <selected value="true"/>
+              <text value="Haal resultaat op"/>
+            </properties>
+          </component>
+          <component id="d0a29" class="javax.swing.JRadioButton" binding="slaResultaatOpRadioButton" default-binding="true">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Sla resultaat op"/>
+            </properties>
+          </component>
+          <component id="39dd3" class="javax.swing.JRadioButton" binding="verwijderResultaatRadioButton" default-binding="true">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Verwijder resultaat"/>
+            </properties>
+          </component>
+          <component id="f9ebf" class="javax.swing.JButton" binding="databaseButton">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Voer uit in database"/>
+            </properties>
+          </component>
+          <component id="6f0be" class="javax.swing.JButton" binding="localButton">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Voer lokaal uit"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
       <component id="68849" class="javax.swing.JButton" binding="berekenButton">
         <constraints>
           <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -82,40 +143,63 @@
           <text value="Bestand inladen"/>
         </properties>
       </component>
-      <scrollpane id="594da">
+      <component id="1abc7" class="javax.swing.JLabel" binding="headerLabel">
         <constraints>
-          <grid row="6" column="1" row-span="2" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <enabled value="false"/>
+          <text value="Header"/>
         </properties>
+      </component>
+      <component id="5ef1b" class="javax.swing.JTextField" binding="headerField">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="5272c" class="javax.swing.JLabel" binding="sequenceLabel">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Sequentie"/>
+        </properties>
+      </component>
+      <scrollpane id="5f0cd" binding="sequenceScroll">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="-1" height="100"/>
+            <maximum-size width="-1" height="100"/>
+          </grid>
+        </constraints>
+        <properties/>
         <border type="none"/>
         <children>
-          <component id="423f1" class="javax.swing.JTable" binding="restultTable">
+          <component id="eb23" class="javax.swing.JTextArea" binding="sequenceArea">
             <constraints/>
             <properties>
-              <autoCreateRowSorter value="true"/>
-              <enabled value="true"/>
+              <editable value="false"/>
             </properties>
           </component>
         </children>
       </scrollpane>
-      <component id="4bd5e" class="javax.swing.JLabel">
+      <component id="9e303" class="javax.swing.JLabel">
         <constraints>
-          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Results:"/>
-        </properties>
-      </component>
-      <component id="17c4d" class="javax.swing.JButton" binding="exportButton" default-binding="true">
-        <constraints>
-          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Export"/>
+          <text value="Resultaten"/>
         </properties>
       </component>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="dataGroup">
+      <member id="c01f"/>
+      <member id="d0a29"/>
+      <member id="39dd3"/>
+    </group>
+  </buttonGroups>
 </form>

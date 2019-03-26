@@ -1,10 +1,10 @@
 package ORFinderGUI;
 
 
-import OrfFinderFinder.OrfFinderFinder;
-import orFinderApp.ORF;
+import databaseConnector.SearchOption;
 import orFinderApp.ORFinderApp;
 import orFinderApp.Query;
+import org.apache.commons.lang.WordUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -12,6 +12,10 @@ import java.awt.*;
 import java.io.*;
 import java.util.regex.Pattern;
 
+/**
+ * @author Elco van Rijswijk, Cas van Rijbroek
+ * @version 1.1
+ */
 public class ORFinderGui extends Component {
     public JPanel getGui() {
         return gui;
@@ -22,9 +26,21 @@ public class ORFinderGui extends Component {
     private JButton browseButton;
     private JButton berekenButton;
     private JComboBox databaseComboBox;
-    private JLabel bestandLabel;
+    private JLabel statusValueLabel;
     private JTable restultTable;
-    private JButton exportButton;
+    private JLabel statusLabel;
+    private JRadioButton haalResultaatOpRadioButton;
+    private JRadioButton slaResultaatOpRadioButton;
+    private JRadioButton verwijderResultaatRadioButton;
+    private JPanel databasePanel;
+    private JButton databaseButton;
+    private JButton localButton;
+    private JTextField headerField;
+    private JLabel headerLabel;
+    private JTextArea sequenceArea;
+    private JLabel sequenceLabel;
+    private JScrollPane sequenceScroll;
+    private ORFinderApp orFinderApp;
 
     final private static FileNameExtensionFilter docfilter = new FileNameExtensionFilter("Fasta files", "fasta");
     private JFileChooser fileChooser;
@@ -41,34 +57,53 @@ public class ORFinderGui extends Component {
         frame.setVisible(true);
     }
 
+    /**
+     * Sets orFinderApp
+     *
+     * @param orFinderApp sets this value into the class variable
+     */
+    public void setORFinderApp(ORFinderApp orFinderApp) {
+        this.orFinderApp = orFinderApp;
+    }
 
-    public ORFinderGui() throws IllegalAccessException,
-            UnsupportedLookAndFeelException, InstantiationException, ClassNotFoundException {
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+    public ORFinderGui() {
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException |
+                ClassNotFoundException err) {
+            showPopupError(String.format("Een fatale showPopupError is voorgekomen, neem contact op met systeembeheer en laat het " +
+                    "volgende zien:\n%s", err.getMessage()));
+        }
 
-        LoadDataBase();
+        browseButton.addActionListener(evt -> browse());
+        databaseButton.addActionListener(evt -> loadFromDatabase());
 
-        browseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                browse();
-            }
-        });
         berekenButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     openFile();
                 } catch (EmptyException | WrongfileException | IOException e) {
-                    error(e.getMessage());
+                    showPopupError(e.getMessage());
                 }
             }
         });
-
     }
 
-    private void LoadDataBase() {
+    private void loadFromDatabase() {
+        Query query;
 
+        if (headerField.getText().isEmpty()) {
+            setStatusLabel("Geef aub eerst een header op");
+            return;
+        }
+
+        if (orFinderApp.getQueryDatabase(SearchOption.NAME, headerField.getText())) {
+            query = orFinderApp.getQuery();
+
+            headerField.setText(query.getHeader());
+            sequenceArea.setText(query.getSequence().replaceAll("(.{50})", "$1\n"));
+        }
     }
-
 
     private void browse() {
         File selectedFile;
@@ -96,10 +131,10 @@ public class ORFinderGui extends Component {
     }
 
     private void readFile(String path) throws WrongfileException, IOException {
-        bestandLabel.setText("");
+        statusValueLabel.setText("");
         String[] paths = path.split(Pattern.quote(File.separator));
         String filename = paths[paths.length - 1];
-        bestandLabel.setText(filename);
+        statusValueLabel.setText(filename);
 
 
         BufferedReader buf = new BufferedReader(new FileReader(path));
@@ -117,17 +152,18 @@ public class ORFinderGui extends Component {
         Seq = Seq.toUpperCase();
         if (Seq.matches("[ATGCN]+")) {
 
-            Query Sequence = new Query(Header, Seq);
-            OrfFinderFinder FindORF = new OrfFinderFinder();
-            FindORF.HanldeQueary(Sequence);
-
+            new Query(Header, Seq);
 
         } else
             throw new WrongfileException("Bestand: " + filename + " is een bestand dat niet bestaat uit DNA, gebruik alstublieft een ander bestand");
 
     }
 
-    private void error(String message) {
+    public void setStatusLabel(String message) {
+        statusValueLabel.setText(message);
+    }
+
+    public void showPopupError(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
 }

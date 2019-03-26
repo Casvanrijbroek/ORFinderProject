@@ -23,7 +23,7 @@ public class Connector {
     /**
      * This method creates a connection to the database and stores it in the connection variable.
      *
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      */
     public void makeConnection() throws SQLException {
         String url = "jdbc:mysql://hannl-hlo-bioinformatica-mysqlsrv.mysql.database.azure.com:3306/owe7_pg2" +
@@ -37,7 +37,7 @@ public class Connector {
     /**
      * This method closes the connection to the database.
      *
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      */
     public void closeConnection() throws SQLException {
         connection.close();
@@ -61,7 +61,7 @@ public class Connector {
      *
      * @param query the Query to add the ORFs to
      * @param headerID the header id of the header to get ORFs from
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      */
     private void addOrfList(Query query, int headerID) throws SQLException {
         ArrayList<ORF> orfList;
@@ -89,7 +89,7 @@ public class Connector {
      *
      * @param orf the ORF to add the ORFs to
      * @param orfID the orf id of the header to get Results from
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      */
     private void addResultList(ORF orf, int orfID) throws SQLException {
         ArrayList<Result> resultList;
@@ -126,7 +126,7 @@ public class Connector {
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value a String with the attribute that is to be searched on
      * @return a single Query object filled with the data retrieved from the database
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      * @throws ConnectionException if the method is called without establishing a connection first
      */
     public Query getQuery(SearchOption searchOption, String value) throws SQLException, ConnectionException {
@@ -155,7 +155,7 @@ public class Connector {
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value an Integer with the ID that is to be searched on
      * @return a single Query object filled with the data retrieved from the database
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      * @throws ConnectionException if the method is called without establishing a connection first
      */
     public Query getQuery(SearchOption searchOption, int value) throws SQLException, ConnectionException {
@@ -166,7 +166,7 @@ public class Connector {
      * Inserts the data in a Query object into the database
      *
      * @param query the Query that is to be inserted into the database
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      * @throws ConnectionException if the method is called without establishing a connection first or when the given
      * query already exists in the database.
      */
@@ -201,7 +201,7 @@ public class Connector {
      *
      * @param orf the orf that is to be inserted
      * @param headerIdentifier the foreign key for the header belonging to the orf
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      */
     private void insertORF(ORF orf, int headerIdentifier) throws SQLException {
         Statement statement;
@@ -225,7 +225,7 @@ public class Connector {
      *
      * @param result the result that is to be inserted
      * @param orfIdentifier the foreign key for the orf belonging to the result
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      */
     private void insertResult(Result result, int orfIdentifier) throws SQLException {
         Statement statement;
@@ -245,7 +245,7 @@ public class Connector {
      *
      * @param header the header that you want to use
      * @return true if the query exists in the database, else false
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      */
     private boolean queryExists(String header) throws SQLException {
         return connection.createStatement().executeQuery(
@@ -258,7 +258,7 @@ public class Connector {
      *
      * @param query the query containing the header that you want to use
      * @return true if the query exists in the database, else false
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      */
     private boolean queryExists(Query query) throws SQLException {
         return queryExists(query.getHeader());
@@ -271,7 +271,7 @@ public class Connector {
      * @param id the id attribute that is to be searched on
      * @param table the table containing the id that is to be searched on
      * @return the new unique identifier
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      */
     private int getNewIdentifier(String id, String table) throws SQLException {
         ResultSet resultSet;
@@ -289,7 +289,7 @@ public class Connector {
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value a String with the attribute that is to be searched on
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      * @throws ConnectionException if the method is called without establishing a connection first
      */
     public void deleteQuery(SearchOption searchOption, String value) throws SQLException, ConnectionException {
@@ -315,7 +315,7 @@ public class Connector {
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value an Integer with the ID that is to be searched on
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @throws SQLException if a database access showPopupError occurs or this method is called on a closed connection
      * @throws ConnectionException if the method is called without establishing a connection first
      */
     public void deleteQuery(SearchOption searchOption, int value) throws SQLException, ConnectionException {
