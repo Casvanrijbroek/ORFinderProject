@@ -1,6 +1,9 @@
 package ORFinderGUI;
 
 
+import OrfFinderFinder.OrfFinderFinder;
+import orFinderApp.ORF;
+import orFinderApp.ORFinderApp;
 import orFinderApp.Query;
 
 import javax.swing.*;
@@ -20,6 +23,8 @@ public class ORFinderGui extends Component {
     private JButton berekenButton;
     private JComboBox databaseComboBox;
     private JLabel bestandLabel;
+    private JTable restultTable;
+    private JButton exportButton;
 
     final private static FileNameExtensionFilter docfilter = new FileNameExtensionFilter("Fasta files", "fasta");
     private JFileChooser fileChooser;
@@ -41,6 +46,8 @@ public class ORFinderGui extends Component {
             UnsupportedLookAndFeelException, InstantiationException, ClassNotFoundException {
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 
+        LoadDataBase();
+
         browseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 browse();
@@ -50,15 +57,15 @@ public class ORFinderGui extends Component {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     openFile();
-                } catch (EmptyException e) {
-                    error(e.getMessage());
-                } catch (WrongfileException e) {
-                    error(e.getMessage());
-                } catch (IOException e) {
+                } catch (EmptyException | WrongfileException | IOException e) {
                     error(e.getMessage());
                 }
             }
         });
+
+    }
+
+    private void LoadDataBase() {
 
     }
 
@@ -106,7 +113,17 @@ public class ORFinderGui extends Component {
             Seq += line;
         }
         buf.close();
-        Query test = new Query(Header, Seq);
+
+        Seq = Seq.toUpperCase();
+        if (Seq.matches("[ATGCN]+")) {
+
+            Query Sequence = new Query(Header, Seq);
+            OrfFinderFinder FindORF = new OrfFinderFinder();
+            FindORF.HanldeQueary(Sequence);
+
+
+        } else
+            throw new WrongfileException("Bestand: " + filename + " is een bestand dat niet bestaat uit DNA, gebruik alstublieft een ander bestand");
 
     }
 
