@@ -29,9 +29,9 @@ public class ORFinderGui extends Component {
     private JLabel statusValueLabel;
     private JTable restultTable;
     private JLabel statusLabel;
-    private JRadioButton haalResultaatOpRadioButton;
-    private JRadioButton slaResultaatOpRadioButton;
-    private JRadioButton verwijderResultaatRadioButton;
+    private JRadioButton fetchResultButton;
+    private JRadioButton saveResultButton;
+    private JRadioButton deleteResultButton;
     private JPanel databasePanel;
     private JButton databaseButton;
     private JButton localButton;
@@ -71,12 +71,13 @@ public class ORFinderGui extends Component {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException |
                 ClassNotFoundException err) {
-            showPopupError(String.format("Een fatale showPopupError is voorgekomen, neem contact op met systeembeheer en laat het " +
-                    "volgende zien:\n%s", err.getMessage()));
+            showPopupError(String.format("Een fatale showPopupError is voorgekomen, neem contact op met systeembeheer " +
+                    "en laat het volgende zien:\n%s", err.getMessage()));
         }
 
         browseButton.addActionListener(evt -> browse());
-        databaseButton.addActionListener(evt -> loadFromDatabase());
+        databaseButton.addActionListener(evt -> executeDatabase());
+        localButton.addActionListener(evt -> executeLocal());
 
         berekenButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -89,11 +90,30 @@ public class ORFinderGui extends Component {
         });
     }
 
+    private void executeLocal() {
+        if (fetchResultButton.isSelected()) {
+
+        } else if (saveResultButton.isSelected()) {
+
+        } else if (deleteResultButton.isSelected()) {
+
+        }
+    }
+
+    private void executeDatabase() {
+        if (fetchResultButton.isSelected()) {
+            loadFromDatabase();
+        } else if (saveResultButton.isSelected()) {
+            insertIntoDatabase();
+        } else if (deleteResultButton.isSelected()) {
+            deleteFromDatabase();
+        }
+    }
+
     private void loadFromDatabase() {
         Query query;
 
-        if (headerField.getText().isEmpty()) {
-            setStatusLabel("Geef aub eerst een header op");
+        if (!hasHeader()) {
             return;
         }
 
@@ -102,6 +122,41 @@ public class ORFinderGui extends Component {
 
             headerField.setText(query.getHeader());
             sequenceArea.setText(query.getSequence().replaceAll("(.{50})", "$1\n"));
+            statusValueLabel.setText("Ophalen resultaat uit database succesvol");
+        }
+    }
+
+    private void insertIntoDatabase() {
+        Query query;
+
+        if (!hasHeader()) {
+            return;
+        }
+
+        query = orFinderApp.getQuery();
+        query.setHeader(headerField.getText());
+
+        if (orFinderApp.insertQueryDatabase(query)) {
+            statusValueLabel.setText("Toevoegen resultaat in database succesvol");
+        }
+    }
+
+    private void deleteFromDatabase() {
+        if (!hasHeader()) {
+            return;
+        }
+
+        if (orFinderApp.deleteQueryDatabase(SearchOption.NAME, headerField.getText())) {
+            statusValueLabel.setText("Verwijderen resultaat uit database succesvol");
+        }
+    }
+
+    private boolean hasHeader() {
+        if (headerField.getText().isEmpty()) {
+            setStatusLabel("Geef aub eerst een header op");
+            return false;
+        } else {
+            return true;
         }
     }
 

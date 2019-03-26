@@ -92,7 +92,7 @@
         <properties/>
         <border type="none" title="Data opties"/>
         <children>
-          <component id="c01f" class="javax.swing.JRadioButton" binding="haalResultaatOpRadioButton" default-binding="true">
+          <component id="c01f" class="javax.swing.JRadioButton" binding="fetchResultButton">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -101,7 +101,7 @@
               <text value="Haal resultaat op"/>
             </properties>
           </component>
-          <component id="d0a29" class="javax.swing.JRadioButton" binding="slaResultaatOpRadioButton" default-binding="true">
+          <component id="d0a29" class="javax.swing.JRadioButton" binding="saveResultButton">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -109,7 +109,7 @@
               <text value="Sla resultaat op"/>
             </properties>
           </component>
-          <component id="39dd3" class="javax.swing.JRadioButton" binding="verwijderResultaatRadioButton" default-binding="true">
+          <component id="39dd3" class="javax.swing.JRadioButton" binding="deleteResultButton">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>

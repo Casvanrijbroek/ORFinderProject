@@ -180,8 +180,8 @@ public class Connector {
         newIdentifier = getNewIdentifier("header_id", "header");
 
         if (queryExists(query)) {
-            throw new ConnectionException("This query already exists in the database\n" +
-                    "Please remove it from the database or change the name of the header");
+            throw new ConnectionException("Dit resultaat bestaat al in de database, verwijder het aub of verander" +
+                    "de naam van de header");
         }
 
         statement.executeUpdate(String.format(

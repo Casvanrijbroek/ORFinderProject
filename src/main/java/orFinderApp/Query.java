@@ -19,6 +19,15 @@ public class Query {
     }
 
     /**
+     * Sets header
+     *
+     * @param header sets this value into the class variable
+     */
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    /**
      * Header of the result
      */
     private String header;

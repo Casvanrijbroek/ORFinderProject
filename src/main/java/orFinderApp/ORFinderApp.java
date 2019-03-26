@@ -101,15 +101,17 @@ public class ORFinderApp {
             databaseConnector.makeConnection();
             query = databaseConnector.getQuery(searchOption, value);
             databaseConnector.closeConnection();
+
+            return true;
         } catch (SQLException err) {
-            handleSQLException(err);
+            handleSQLException(err, "ophalen");
 
             return false;
         } catch (ConnectionException err) {
-            //TODO do something with the user interface
-        }
+            handleConnectionException(err);
 
-        return true;
+            return false;
+        }
     }
 
     /**
@@ -131,15 +133,21 @@ public class ORFinderApp {
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value a String with the attribute that is to be searched on
      */
-    public void deleteQueryDatabase(SearchOption searchOption, String value) {
+    public boolean deleteQueryDatabase(SearchOption searchOption, String value) {
         try {
             databaseConnector.makeConnection();
             databaseConnector.deleteQuery(searchOption, value);
             databaseConnector.closeConnection();
+
+            return true;
         } catch(SQLException err) {
+            handleSQLException(err, "verwijderen");
 
+            return false;
         } catch (ConnectionException err) {
+            handleConnectionException(err);
 
+            return false;
         }
     }
 
@@ -150,8 +158,8 @@ public class ORFinderApp {
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value an integer with the attribute that is to be searched on
      */
-    public void deleteQueryDatabase(SearchOption searchOption, int value) {
-        deleteQueryDatabase(searchOption, String.valueOf(value));
+    public boolean deleteQueryDatabase(SearchOption searchOption, int value) {
+        return deleteQueryDatabase(searchOption, String.valueOf(value));
     }
 
     /**
@@ -164,15 +172,21 @@ public class ORFinderApp {
      *
      * @param query the Query object that is to be inserted
      */
-    public void insertQueryDatabase(Query query) {
+    public boolean insertQueryDatabase(Query query) {
         try {
             databaseConnector.makeConnection();
             databaseConnector.insertQuery(query);
             databaseConnector.closeConnection();
+
+            return true;
         } catch (SQLException err) {
+            handleSQLException(err, "toevoegen");
 
+            return false;
         } catch (ConnectionException err) {
+            handleConnectionException(err);
 
+            return false;
         }
     }
 
@@ -181,21 +195,20 @@ public class ORFinderApp {
      * have to be present in the Query for this method to work. It handles exceptions that can be thrown by the blast
      * method.
      */
-    public void proteinBlastQuery() {
-        if (!hasQuery()) {
-            //TODO show in GUI
-        } else {
-            try {
-                proteinBlast.blast(query);
-            } catch (NoBlastConnectionException err) {
-                //TODO show in GUI
-            } catch (InterruptedException err) {
-                //TODO show in GUI
-            }
+    public boolean proteinBlastQuery() {
+        try {
+            proteinBlast.blast(query);
+
+            return true;
+        } catch (NoBlastConnectionException | InterruptedException err) {
+            orFinderGui.showPopupError(err.getMessage());
+            orFinderGui.showPopupError(err.getMessage());
+
+            return false;
         }
     }
 
-    private void handleSQLException(SQLException err) {
+    private void handleSQLException(SQLException err, String action) {
         if (err.getMessage().equals("Illegal operation on empty result set.")) {
             orFinderGui.setStatusLabel("De opgegeven header heeft niks opgeleverd in de database");
 
@@ -207,9 +220,19 @@ public class ORFinderApp {
             return;
         }
 
-        orFinderGui.showPopupError(String.format("Een probleem heeft zich voorgedaan tijdens het ophalen van een " +
+        orFinderGui.showPopupError(String.format("Een probleem heeft zich voorgedaan tijdens het %s van een " +
                 "resultaat uit de database.\nNeem contact op met het systeembeheer en laat aub de volgende error " +
-                "zien:\nSQLState: %s\nError code: %s\nMessage: %s", err.getSQLState(), err.getErrorCode(), err.getMessage()));
+                "zien:\nSQLState: %s\nError code: %s\nMessage: %s",
+                action, err.getSQLState(), err.getErrorCode(), err.getMessage()));
+    }
+
+    private void handleConnectionException(ConnectionException err) {
+        if (err.getMessage().equals("Please create a connection first")) {
+            orFinderGui.showPopupError("Er heeft zich een interne fout voorgedaan in de applicatie\n" +
+                    "Neem contact op met systeem beheer\nERROR code: CONN.connector1");
+        } else {
+            orFinderGui.setStatusLabel(err.getMessage());
+        }
     }
 
     /**
