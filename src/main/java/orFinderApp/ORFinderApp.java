@@ -77,6 +77,15 @@ public class ORFinderApp {
     }
 
     /**
+     * Gets query
+     *
+     * @return value of query
+     */
+    Query getQuery() {
+        return query;
+    }
+
+    /**
      * This method is used to obtain a query from the database based on it's header or identifier. It utilises the
      * getQuery method of the Connector to retrieve the query and handles exceptions that can be thrown by these
      * methods.
