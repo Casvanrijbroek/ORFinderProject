@@ -34,6 +34,7 @@ public class proteinBlast {
         this.queryString = this.occQuery.getSequence();
         this.proteinBlast();
         return checkResults(query);
+        //todo Error als geen ORFS
     }
 
 
