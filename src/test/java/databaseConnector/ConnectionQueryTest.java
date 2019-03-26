@@ -39,10 +39,6 @@ public class ConnectionQueryTest {
     }
 
     @Test
-    public void hasNOResult() throws ClassNotFoundException {
-    }
-
-    @Test
     public void insertQuery() throws SQLException, ConnectionException {
         Query query = new Query("delete this", "ATCG");
         ORF orf = new ORF(1, 10);
@@ -72,12 +68,14 @@ public class ConnectionQueryTest {
         connector.deleteQuery(SearchOption.NAME, "delete this");
     }
 
+    @Disabled
     @Test
     public void deleteQueryInt() throws SQLException, ConnectionException {
         connector.deleteQuery(SearchOption.ID, 4);
     }
 
     @Disabled
+    @Test
     public void deleteQueryFalseIndex() throws SQLException, ConnectionException {
         connector.deleteQuery(SearchOption.ID, -1);
     }

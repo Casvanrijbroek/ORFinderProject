@@ -21,7 +21,7 @@ import java.sql.SQLException;
  * to scale the application to handle more queries at once.
  *
  * @author Cas van Rijbroek
- * @version 0.2
+ * @version 0.3
  */
 public class ORFinderApp {
     /**
@@ -33,6 +33,9 @@ public class ORFinderApp {
      * This connector is used to make connections to the database and executes SQL commands.
      */
     private Connector databaseConnector;
+    /**
+     * The ProteinBlast object used to BLAST protein sequences via the NCBI BLAST server.
+     */
     private proteinBlast proteinBlast;
 
     /**
@@ -166,16 +169,14 @@ public class ORFinderApp {
     public void proteinBlastQuery() {
         if (!hasQuery()) {
             //TODO show in GUI
-
-            return;
-        }
-
-        try {
-            proteinBlast.proteinBlast(query);
-        } catch (NoBlastConnectionException err) {
-            //TODO show in GUI
-        } catch (InterruptedException err) {
-            //TODO show in GUI
+        } else {
+            try {
+                proteinBlast.proteinBlast(query);
+            } catch (NoBlastConnectionException err) {
+                //TODO show in GUI
+            } catch (InterruptedException err) {
+                //TODO show in GUI
+            }
         }
     }
 
