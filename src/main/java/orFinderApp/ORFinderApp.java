@@ -171,7 +171,7 @@ public class ORFinderApp {
             //TODO show in GUI
         } else {
             try {
-                proteinBlast.proteinBlast(query);
+                proteinBlast.blast(query);
             } catch (NoBlastConnectionException err) {
                 //TODO show in GUI
             } catch (InterruptedException err) {
