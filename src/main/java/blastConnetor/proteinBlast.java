@@ -50,7 +50,7 @@ public class proteinBlast {
 
     /**
      * Creates BLAST thread. The ORF of the query given at the contructor are blasted.
-     * According to the Blastdoc developer info, only one Blast request may be send once every 10 seccconds.
+     * According  to the Blastdoc developer info, only one Blast request may be send once every 10 seccconds.
      * To make sure the user of the application will not be banned from the Blast services, this delay is set on
      * 10.5 seconds. See
      * https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=DeveloperInfo
