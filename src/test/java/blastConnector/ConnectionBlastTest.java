@@ -1,5 +1,6 @@
 package blastConnector;
 
+import blastConnetor.NoBlastConnectionException;
 import blastConnetor.proteinBlast;
 import orFinderApp.ORF;
 import orFinderApp.Query;
@@ -32,11 +33,7 @@ public class ConnectionBlastTest {
 
 
     @Test
-    public void blastSequence(){
-        try {
+    public void blastSequence() throws NoBlastConnectionException, InterruptedException {
             assertEquals( 5 ,testBlast.blast(query));
-        } catch (Exception e){
-            assertEquals(true,false);
-        }
     }
 }

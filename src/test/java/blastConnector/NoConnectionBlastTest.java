@@ -1,12 +1,13 @@
 package blastConnector;
 
+import blastConnetor.NoBlastConnectionException;
 import blastConnetor.proteinBlast;
 import orFinderApp.ORF;
 import orFinderApp.Query;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class NoConnectionBlastTest {
 
@@ -33,13 +34,7 @@ public class NoConnectionBlastTest {
 
     @Test
     public void blastSequence(){
-        try {
-            testBlast.blast(query);
-        } catch (Exception e){
-            assertEquals("No connection can be established with the internet." +
-                    " Please make sure you have an adequate internet connection and try again later"
-                    ,e.getLocalizedMessage());
-        }
+        assertThrows(NoBlastConnectionException.class, () -> testBlast.blast(query));
     }
 
 }
