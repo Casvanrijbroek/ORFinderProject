@@ -112,6 +112,10 @@ public class ORFinderGui extends Component {
     private void findORFS() {
         if (hasNoHeader()) {
             return;
+        } else if (sequenceArea.getText().isEmpty()) {
+            setStatusLabel("Voer een een sequentie in");
+
+            return;
         }
 
         orFinderApp.setQuery(new Query(headerField.getText(), sequenceArea.getText()));
@@ -120,7 +124,8 @@ public class ORFinderGui extends Component {
     }
 
     private void blast() {
-        if (orFinderApp.getQuery().getOrfList().size() <= 0) {
+        if (orFinderApp.getQuery() == null || orFinderApp.getQuery().getOrfList() == null ||
+                orFinderApp.getQuery().getOrfList().size() <= 0) {
             setStatusLabel("Er zijn (nog) geen ORFs om te blasten");
         } else if (orFinderApp.proteinBlastQuery()) {
             visualiseQuery(orFinderApp.getQuery());
@@ -352,8 +357,10 @@ public class ORFinderGui extends Component {
         setSequenceArea(query.getSequence());
         orfComboBox.removeAllItems();
 
-        for (ORF orf : query.getOrfList()) {
-            orfComboBox.addItem(orf);
+        if (query.getOrfList() != null) {
+            for (ORF orf : query.getOrfList()) {
+                orfComboBox.addItem(orf);
+            }
         }
     }
 
