@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * results. The user can also save these results either locally or in the remote database.
  *
  * @author Elco van Rijswijk, Cas van Rijbroek
- * @version 1.2
+ * @version 1.3
  * 27-03-2019
  */
 public class ORFinderGui extends Component {
@@ -96,13 +96,11 @@ public class ORFinderGui extends Component {
         browseButton.addActionListener(evt -> browse());
         databaseButton.addActionListener(evt -> executeDatabase());
         localButton.addActionListener(evt -> executeLocal());
-        loadFileButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    openFile();
-                } catch (EmptyException | WrongfileException | IOException e) {
-                    showPopupError(e.getMessage());
-                }
+        loadFileButton.addActionListener(evt -> {
+            try {
+                openFile();
+            } catch (EmptyException | WrongfileException | IOException e) {
+                showPopupError(e.getMessage());
             }
         });
 
@@ -114,15 +112,20 @@ public class ORFinderGui extends Component {
     private void findORFS() {
         if (hasNoHeader()) {
             return;
+        } else if (sequenceArea.getText().isEmpty()) {
+            setStatusLabel("Voer een een sequentie in");
+
+            return;
         }
 
         orFinderApp.setQuery(new Query(headerField.getText(), sequenceArea.getText()));
-        //TODO find orfs
+        orFinderApp.findORFS();
         visualiseQuery(orFinderApp.getQuery());
     }
 
     private void blast() {
-        if (orFinderApp.getQuery().getOrfList().size() <= 0) {
+        if (orFinderApp.getQuery() == null || orFinderApp.getQuery().getOrfList() == null ||
+                orFinderApp.getQuery().getOrfList().size() <= 0) {
             setStatusLabel("Er zijn (nog) geen ORFs om te blasten");
         } else if (orFinderApp.proteinBlastQuery()) {
             visualiseQuery(orFinderApp.getQuery());
@@ -171,8 +174,6 @@ public class ORFinderGui extends Component {
             query = orFinderApp.getQuery();
 
             visualiseQuery(query);
-            //headerField.setText(query.getHeader());
-            //sequenceArea.setText(query.getSequence());
             statusValueLabel.setText("Ophalen resultaat uit database succesvol");
         }
     }
@@ -356,8 +357,10 @@ public class ORFinderGui extends Component {
         setSequenceArea(query.getSequence());
         orfComboBox.removeAllItems();
 
-        for (ORF orf : query.getOrfList()) {
-            orfComboBox.addItem(orf);
+        if (query.getOrfList() != null) {
+            for (ORF orf : query.getOrfList()) {
+                orfComboBox.addItem(orf);
+            }
         }
     }
 
