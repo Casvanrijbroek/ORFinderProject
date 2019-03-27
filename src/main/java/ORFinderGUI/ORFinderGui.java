@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * results. The user can also save these results either locally or in the remote database.
  *
  * @author Elco van Rijswijk, Cas van Rijbroek
- * @version 1.2
+ * @version 1.3
  * 27-03-2019
  */
 public class ORFinderGui extends Component {
@@ -96,13 +96,11 @@ public class ORFinderGui extends Component {
         browseButton.addActionListener(evt -> browse());
         databaseButton.addActionListener(evt -> executeDatabase());
         localButton.addActionListener(evt -> executeLocal());
-        loadFileButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    openFile();
-                } catch (EmptyException | WrongfileException | IOException e) {
-                    showPopupError(e.getMessage());
-                }
+        loadFileButton.addActionListener(evt -> {
+            try {
+                openFile();
+            } catch (EmptyException | WrongfileException | IOException e) {
+                showPopupError(e.getMessage());
             }
         });
 
@@ -117,7 +115,7 @@ public class ORFinderGui extends Component {
         }
 
         orFinderApp.setQuery(new Query(headerField.getText(), sequenceArea.getText()));
-        //TODO find orfs
+        orFinderApp.findORFS();
         visualiseQuery(orFinderApp.getQuery());
     }
 
@@ -171,8 +169,6 @@ public class ORFinderGui extends Component {
             query = orFinderApp.getQuery();
 
             visualiseQuery(query);
-            //headerField.setText(query.getHeader());
-            //sequenceArea.setText(query.getSequence());
             statusValueLabel.setText("Ophalen resultaat uit database succesvol");
         }
     }

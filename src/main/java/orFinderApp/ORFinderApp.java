@@ -1,6 +1,7 @@
 package orFinderApp;
 
 import ORFinderGUI.ORFinderGui;
+import OrfFinderFinder.OrfFinderFinder;
 import blastConnetor.NoBlastConnectionException;
 import blastConnetor.proteinBlast;
 import databaseConnector.ConnectionException;
@@ -39,6 +40,7 @@ public class ORFinderApp {
      */
     private proteinBlast proteinBlast;
     private ORFinderGui orFinderGui;
+    private OrfFinderFinder orFinderFinder;
 
     /**
      * The static main method that sets up the application. This is where the GUI is visualised.
@@ -58,6 +60,7 @@ public class ORFinderApp {
 
         databaseConnector = new Connector();
         proteinBlast = new proteinBlast();
+        orFinderFinder = new OrfFinderFinder();
         orFinderGui = new ORFinderGui(this);
 
         frame = new JFrame();
@@ -205,6 +208,10 @@ public class ORFinderApp {
 
             return false;
         }
+    }
+
+    public void findORFS() {
+        orFinderFinder.HandleQuery(query);
     }
 
     private void handleSQLException(SQLException err, String action) {
