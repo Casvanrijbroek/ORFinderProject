@@ -24,13 +24,13 @@ public class ConnectionQueryTest {
 
     @Test
     public void getQueryString() throws SQLException, ConnectionException {
-        assertEquals("ATCG", connector.getQuery(SearchOption.NAME, "organisme 1")
-                        .getSequence());
+        assertEquals("organisme 1", connector.getQuery(SearchOption.NAME, "organisme 1")
+                        .getHeader());
     }
 
     @Test
     public void getQueryInt() throws SQLException, ConnectionException {
-        assertEquals("ATCG", connector.getQuery(SearchOption.ID, 1).getSequence());
+        assertEquals("organisme 1", connector.getQuery(SearchOption.ID, 1).getHeader());
     }
 
     @Test
