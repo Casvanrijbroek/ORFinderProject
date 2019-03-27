@@ -13,6 +13,7 @@ import java.util.ArrayList;
  *
  * @author Cas van Rijbroek
  * @version 1.3
+ * 27-03-2019
  */
 public class Connector {
     /**

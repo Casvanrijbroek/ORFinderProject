@@ -4,30 +4,49 @@ package ORFinderGUI;
 import databaseConnector.SearchOption;
 import orFinderApp.ORFinderApp;
 import orFinderApp.Query;
-import org.apache.commons.lang.WordUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
+ * This class creates a GUI for the ORFinder. This is where the user can input Fasta files, find ORF's an blast the
+ * results. The user can also save these results either locally or in the remote database.
+ *
  * @author Elco van Rijswijk, Cas van Rijbroek
  * @version 1.1
+ * 27-03-2019
  */
 public class ORFinderGui extends Component {
-    public JPanel getGui() {
-        return gui;
-    }
-
+    /**
+     * A filter for the JFileChooser that only accepts Fasta files.
+     */
+    final private static FileNameExtensionFilter FASTA_FILTER = new FileNameExtensionFilter(
+            "Fasta files", "fasta", "fa");
+    /**
+     * The orFinderApp belonging to the GUI.
+     */
+    private ORFinderApp orFinderApp;
+    /**
+     * The JFileChooser that the user can use to load in a Fasta file.
+     */
+    private JFileChooser fileChooser;
+    /*
+    Below the variables that represent the swing components of the GUI are defined. Some are not used in this class,
+    because the form file already assigns values and to certain components.
+     */
     public JPanel gui;
-    private JTextField filepathTextField;
+    private JTextField filePathField;
     private JButton browseButton;
-    private JButton berekenButton;
+    private JButton loadFileButton;
     private JComboBox databaseComboBox;
     private JLabel statusValueLabel;
-    private JTable restultTable;
+    private JTable resultTable;
     private JLabel statusLabel;
     private JRadioButton fetchResultButton;
     private JRadioButton saveResultButton;
@@ -40,35 +59,26 @@ public class ORFinderGui extends Component {
     private JTextArea sequenceArea;
     private JLabel sequenceLabel;
     private JScrollPane sequenceScroll;
-    private ORFinderApp orFinderApp;
-
-    final private static FileNameExtensionFilter docfilter = new FileNameExtensionFilter("Fasta files", "fasta");
-    private JFileChooser fileChooser;
-    private static String imagePad;
-    private static String seperator = "/";
-
-
-    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        JFrame frame = new JFrame();
-        frame.setContentPane(new ORFinderGui().gui);
-        frame.setIconImage(Toolkit.getDefaultToolkit().getImage(imagePad + "icon.jpg"));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
+    private JLabel filePathLabel;
+    private JLabel loadFileLabel;
+    private JScrollPane resultScroll;
+    private JLabel resultLabel;
 
     /**
-     * Sets orFinderApp
+     * This constructor sets up the class is several ways:
+     * 1. It sets the look of the JFileChooser in the windows fashion.
+     * 2. It adds actionListeners to the buttons.
+     * 3. It sets the ORFinderApp belonging to the GUI.
      *
-     * @param orFinderApp sets this value into the class variable
+     * @param orFinderApp the ORFinderApp belonging to the GUI
      */
-    public void setORFinderApp(ORFinderApp orFinderApp) {
-        this.orFinderApp = orFinderApp;
-    }
-
-    public ORFinderGui() {
+    public ORFinderGui(ORFinderApp orFinderApp) {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+
+            fileChooser = new JFileChooser();
+            fileChooser.setFileFilter(FASTA_FILTER);
+            fileChooser.setAcceptAllFileFilterUsed(false);
         } catch (IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException |
                 ClassNotFoundException err) {
             showPopupError(String.format("Een fatale showPopupError is voorgekomen, neem contact op met systeembeheer " +
@@ -78,8 +88,7 @@ public class ORFinderGui extends Component {
         browseButton.addActionListener(evt -> browse());
         databaseButton.addActionListener(evt -> executeDatabase());
         localButton.addActionListener(evt -> executeLocal());
-
-        berekenButton.addActionListener(new java.awt.event.ActionListener() {
+        loadFileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     openFile();
@@ -88,8 +97,14 @@ public class ORFinderGui extends Component {
                 }
             }
         });
+
+        setORFinderApp(orFinderApp);
     }
 
+    /**
+     * This method references local data handling methods when the user pressed the handle local button.
+     * The method called is determined by the radiobutton selected by the user. Fetch result is the default option.
+     */
     private void executeLocal() {
         if (fetchResultButton.isSelected()) {
 
@@ -100,6 +115,10 @@ public class ORFinderGui extends Component {
         }
     }
 
+    /**
+     * This method references database handling methods when the user pressed the handle local button.
+     * The method called is determined by the radiobutton selected by the user. Fetch result is the default option.
+     */
     private void executeDatabase() {
         if (fetchResultButton.isSelected()) {
             loadFromDatabase();
@@ -110,10 +129,13 @@ public class ORFinderGui extends Component {
         }
     }
 
+    /**
+     * This method calls the ORFinderApp to fetch a query from the database based on header.
+     */
     private void loadFromDatabase() {
         Query query;
 
-        if (!hasHeader()) {
+        if (hasNoHeader()) {
             return;
         }
 
@@ -121,19 +143,29 @@ public class ORFinderGui extends Component {
             query = orFinderApp.getQuery();
 
             headerField.setText(query.getHeader());
-            sequenceArea.setText(query.getSequence().replaceAll("(.{50})", "$1\n"));
+            sequenceArea.setText(query.getSequence());
             statusValueLabel.setText("Ophalen resultaat uit database succesvol");
         }
     }
 
+    /**
+     * This method calls the ORFinderApp to insert the current query displayed in the GUI into the database.
+     */
     private void insertIntoDatabase() {
         Query query;
 
-        if (!hasHeader()) {
+        if (hasNoHeader()) {
             return;
         }
 
         query = orFinderApp.getQuery();
+
+        if (query == null) {
+            setStatusLabel("Voer op zijn minst een header en een sequentie in om een resultaat op te slaan");
+
+            return;
+        }
+
         query.setHeader(headerField.getText());
 
         if (orFinderApp.insertQueryDatabase(query)) {
@@ -141,8 +173,11 @@ public class ORFinderGui extends Component {
         }
     }
 
+    /**
+     * This method calls the ORFinderApp to delete the query related to the current header displayed in the GUI.
+     */
     private void deleteFromDatabase() {
-        if (!hasHeader()) {
+        if (hasNoHeader()) {
             return;
         }
 
@@ -151,31 +186,19 @@ public class ORFinderGui extends Component {
         }
     }
 
-    private boolean hasHeader() {
-        if (headerField.getText().isEmpty()) {
-            setStatusLabel("Geef aub eerst een header op");
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     private void browse() {
         File selectedFile;
 
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(docfilter);
-        int value = chooser.showOpenDialog(null);
-
+        int value =fileChooser.showOpenDialog(null);
 
         if (value == JFileChooser.APPROVE_OPTION) {
-            selectedFile = chooser.getSelectedFile();
-            filepathTextField.setText(selectedFile.getAbsolutePath());
+            selectedFile = fileChooser.getSelectedFile();
+            filePathField.setText(selectedFile.getAbsolutePath());
         }
     }
 
     private void openFile() throws EmptyException, WrongfileException, IOException {
-        String Filepath = filepathTextField.getText();
+        String Filepath = filePathField.getText();
         if (Filepath.isEmpty()) {
             throw new EmptyException("Bestandspad bestaat niet, kies alstublieft een bestand via de 'bladeren' knop");
         } else {
@@ -208,16 +231,69 @@ public class ORFinderGui extends Component {
         if (Seq.matches("[ATGCN]+")) {
 
             new Query(Header, Seq);
+            headerField.setText(Header);
+            setSequenceArea(Seq);
 
         } else
             throw new WrongfileException("Bestand: " + filename + " is een bestand dat niet bestaat uit DNA, gebruik alstublieft een ander bestand");
 
     }
 
+    /**
+     * Checks if there is currently no header displayed in the GUI.
+     *
+     * @return true if there is no header displayed, else false
+     */
+    private boolean hasNoHeader() {
+        if (headerField.getText().isEmpty()) {
+            setStatusLabel("Geef aub eerst een header op");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Gets gui.
+     *
+     * @return value of gui
+     */
+    public JPanel getGui() {
+        return gui;
+    }
+
+    /**
+     * Sets orFinderApp.
+     *
+     * @param orFinderApp sets this value into the class variable
+     */
+    private void setORFinderApp(ORFinderApp orFinderApp) {
+        this.orFinderApp = orFinderApp;
+    }
+
+    /**
+     * Sets sequenceArea.
+     *
+     * @param sequence sets this value into the class variable
+     */
+    private void setSequenceArea(String sequence) {
+        sequenceArea.setText(sequence.replaceAll("(.{50})", "$1\n"));
+    }
+
+    /**
+     * Sets a message into the statusValueLabel.
+     *
+     * @param message sets this value into the class variable
+     */
     public void setStatusLabel(String message) {
         statusValueLabel.setText(message);
     }
 
+    /**
+     * Shows a popup to the user displaying an (error) message.
+     *
+     * @param message the message that is to be displayed
+     */
     public void showPopupError(String message) {
         JOptionPane.showMessageDialog(null, message);
     }

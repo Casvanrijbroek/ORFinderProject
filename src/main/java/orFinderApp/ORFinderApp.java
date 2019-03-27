@@ -22,6 +22,7 @@ import java.sql.SQLException;
  *
  * @author Cas van Rijbroek
  * @version 0.3
+ * 27-03-2019
  */
 public class ORFinderApp {
     /**
@@ -57,9 +58,8 @@ public class ORFinderApp {
 
         databaseConnector = new Connector();
         proteinBlast = new proteinBlast();
-        orFinderGui = new ORFinderGui();
+        orFinderGui = new ORFinderGui(this);
 
-        orFinderGui.setORFinderApp(this);
         frame = new JFrame();
         frame.setContentPane(orFinderGui.getGui());
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
