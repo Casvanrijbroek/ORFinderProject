@@ -1,5 +1,6 @@
 package OrfFinderFinder;
 
+
 import orFinderApp.ORF;
 import orFinderApp.Query;
 
@@ -18,6 +19,7 @@ public class OrfFinderFinder {
     final static String stop3Codon = "TAG";
 
     Boolean Forward = true;
+    Boolean Continue = true;
 
     /**
      * HandleQuery calls function GenreadingFrame and findGenes
@@ -27,12 +29,15 @@ public class OrfFinderFinder {
     public void HandleQuery(Query query) {
 
         ArrayList<String> frames = GenReadingFrame(query.getSequence());
-        for (int frame = 0; frame < frames.size(); frame++) {
-            FindGenes(frames.get(frame), query);
-            Forward = false;
 
+        String RevSeq = new StringBuilder(query.getSequence()).reverse().toString();
+        String ForSeq = query.getSequence();
 
-        }
+        FindGenes(ForSeq, query);
+        Continue = true;
+        Forward = false;
+        FindGenes(RevSeq, query);
+
 
     }
 
@@ -48,35 +53,36 @@ public class OrfFinderFinder {
 
         ArrayList<String> allGenes = new ArrayList<String>();
 
-        int start = -1;
-        while (true) {
+        int start = 0;
+        int stop = 0;
 
-            start = frame.indexOf(startCodon, start + 1);
-            if (start == -1) {
-                break;
+        while (Continue) {
+            start = frame.indexOf(startCodon, stop);
+
+            if (start < 0) {
+                Continue = false;
             }
 
-            int stop = FindStopCodon(frame, start);
+            if (start > 0) {
+                stop = FindStopCodon(frame, start);
 
-            if (stop > start) {
-                // gene = frame.substring(start, stop + 3);
 
-                //if (!allGenes.contains(gene)) {
-                //    allGenes.add(gene);
-                //}
-
-                if ((stop - start > 102)) {
+                if ((stop - start > 100)) {
+                    //String gene = frame.substring(start, stop + 3);
+                    //if (!allGenes.contains(gene)) {
+                    //  allGenes.add(gene);
+                    //}
                     if (Forward) {
                         query.addOrfList(new ORF(start, (stop + 3)));
                     }
-                    if (!Forward) {
-                        start = (frame.length() - start);
-                        stop = (frame.length() - stop);
-                        query.addOrfList(new ORF(start, (stop - 3)));
-                    }
-                    //System.out.println("From: " + start + " to " + stop + " Gene: " + gene);
-                }
 
+                    if (!Forward) {
+                        int startfor = (frame.length() - start);
+                        int stopfor = (frame.length() - stop);
+                        query.addOrfList(new ORF(startfor, (stopfor - 3)));
+                    }
+                    //System.out.println("From: " + start + " to " + stop + " Gene: ");
+                }
             }
         }
 
@@ -89,23 +95,30 @@ public class OrfFinderFinder {
     /**
      * FindStopCodon accepts the frame with its start position and if a stop codon is found
      * returns the stop position
+     *
      * @param frame the String frame from FindGenes
      * @param start Integer start position from FindGenes
      * @return stop position of founded gene
      */
     public int FindStopCodon(String frame, int start) {
 
-        for (int i = start + 3; i < frame.length() - 3; i += 3) {
+        for (int i = start; i < frame.length(); i += 3) {
 
-            String frameString = frame.substring(i, i + 3);
+            if ((i + 3) < frame.length()) {
 
-            if (frameString.equals(stop1Codon)) {
-                return i;
-            } else if (frameString.equals(stop2Codon)) {
-                return i;
+                String frameString = frame.substring(i, i + 3);
 
-            } else if (frameString.equals(stop3Codon)) {
-                return i;
+                if (frameString.equals(stop1Codon)) {
+                    return i;
+                } else if (frameString.equals(stop2Codon)) {
+                    return i;
+
+                } else if (frameString.equals(stop3Codon)) {
+                    return i;
+                }
+            }
+            if ((i + 3) > frame.length()) {
+                Continue = false;
             }
 
         }
@@ -115,16 +128,22 @@ public class OrfFinderFinder {
 
     /**
      * GenReadingFrame accepts the sequence and returns the forward and reverse strand of the sequence
+     *
      * @param Sequence from HandleQuery
      * @return Arraylist with the forward and reverse strand
      */
     public ArrayList<String> GenReadingFrame(String Sequence) {
+
         ArrayList<String> frames = new ArrayList();
 
         String ForSeq = Sequence;
         String RevSeq = new StringBuilder(Sequence).reverse().toString();
+
         frames.add(ForSeq);
         frames.add(RevSeq);
+
         return frames;
     }
+
+
 }
