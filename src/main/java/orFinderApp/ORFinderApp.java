@@ -234,13 +234,4 @@ public class ORFinderApp {
             orFinderGui.setStatusLabel(err.getMessage());
         }
     }
-
-    /**
-     * Checks if the query has been initialised.
-     *
-     * @return true if the query is initialised, else false.
-     */
-    private boolean hasQuery() {
-        return (query != null);
-    }
 }

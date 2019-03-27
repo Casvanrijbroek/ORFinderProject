@@ -2,11 +2,14 @@ package ORFinderGUI;
 
 
 import databaseConnector.SearchOption;
+import orFinderApp.ORF;
 import orFinderApp.ORFinderApp;
 import orFinderApp.Query;
+import orFinderApp.Result;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
@@ -44,7 +47,7 @@ public class ORFinderGui extends Component {
     private JTextField filePathField;
     private JButton browseButton;
     private JButton loadFileButton;
-    private JComboBox databaseComboBox;
+    private JComboBox<ORF> orfComboBox;
     private JLabel statusValueLabel;
     private JTable resultTable;
     private JLabel statusLabel;
@@ -85,6 +88,7 @@ public class ORFinderGui extends Component {
                     "en laat het volgende zien:\n%s", err.getMessage()));
         }
 
+        orfComboBox.addActionListener(evt -> showResults());
         browseButton.addActionListener(evt -> browse());
         databaseButton.addActionListener(evt -> executeDatabase());
         localButton.addActionListener(evt -> executeLocal());
@@ -98,7 +102,27 @@ public class ORFinderGui extends Component {
             }
         });
 
+        setResultTableModel();
+
         setORFinderApp(orFinderApp);
+    }
+
+    private void showResults() {
+        DefaultTableModel tableModel;
+        ORF orf;
+
+        tableModel = (DefaultTableModel) resultTable.getModel();
+        orf = (ORF) orfComboBox.getSelectedItem();
+
+        tableModel.setRowCount(0);
+
+        if (orf != null) {
+            for (Result result : orf.getResultList()) {
+                tableModel.addRow(new Object[]{result.getAccession(), result.getDescription(), result.getScore(),
+                        result.getQueryCover(), result.getpValue(), result.getIdentity(), result.getStartPosition(),
+                        result.getStopPosition()});
+            }
+        }
     }
 
     /**
@@ -142,8 +166,9 @@ public class ORFinderGui extends Component {
         if (orFinderApp.getQueryDatabase(SearchOption.NAME, headerField.getText())) {
             query = orFinderApp.getQuery();
 
-            headerField.setText(query.getHeader());
-            sequenceArea.setText(query.getSequence());
+            visualiseQuery(query);
+            //headerField.setText(query.getHeader());
+            //sequenceArea.setText(query.getSequence());
             statusValueLabel.setText("Ophalen resultaat uit database succesvol");
         }
     }
@@ -209,33 +234,39 @@ public class ORFinderGui extends Component {
     }
 
     private void readFile(String path) throws WrongfileException, IOException {
-        statusValueLabel.setText("");
-        String[] paths = path.split(Pattern.quote(File.separator));
-        String filename = paths[paths.length - 1];
-        statusValueLabel.setText(filename);
+        BufferedReader reader;
+        String line;
+        String header;
+        String sequence;
+        String fileName;
+        String[] paths;
+        StringBuilder sequenceBuilder;
 
+        paths = path.split(Pattern.quote(File.separator));
+        fileName = paths[paths.length - 1];
+        statusValueLabel.setText(String.format("%s ingeladen", fileName));
 
-        BufferedReader buf = new BufferedReader(new FileReader(path));
-        String Header = buf.readLine();
-        String line = null;
-        String Seq = "";
-        while ((line = buf.readLine()) != null) {
+        reader = new BufferedReader(new FileReader(path));
+        header = reader.readLine();
+        sequenceBuilder = new StringBuilder();
+
+        while ((line = reader.readLine()) != null) {
             if (line.startsWith(">")) {
-                throw new WrongfileException("Bestand: " + filename + " is een file met meerdere sequenties, gebruik een fasta file met één sequentie");
+                throw new WrongfileException("Bestand: " + fileName + " is een file met meerdere sequenties, gebruik een fasta file met één sequentie");
             }
-            Seq += line;
+            sequenceBuilder.append(line);
         }
-        buf.close();
+        reader.close();
 
-        Seq = Seq.toUpperCase();
-        if (Seq.matches("[ATGCN]+")) {
+        sequence = sequenceBuilder.toString().toUpperCase();
+        if (sequence.matches("[ATGCN]+")) {
 
-            new Query(Header, Seq);
-            headerField.setText(Header);
-            setSequenceArea(Seq);
+            orFinderApp.setQuery(new Query(header, sequence));
+            headerField.setText(header);
+            setSequenceArea(sequence);
 
         } else
-            throw new WrongfileException("Bestand: " + filename + " is een bestand dat niet bestaat uit DNA, gebruik alstublieft een ander bestand");
+            throw new WrongfileException("Bestand: " + fileName + " is een bestand dat niet bestaat uit DNA, gebruik alstublieft een ander bestand");
 
     }
 
@@ -277,7 +308,7 @@ public class ORFinderGui extends Component {
      * @param sequence sets this value into the class variable
      */
     private void setSequenceArea(String sequence) {
-        sequenceArea.setText(sequence.replaceAll("(.{50})", "$1\n"));
+        sequenceArea.setText(sequence.replaceAll("(.{100})", "$1\n"));
     }
 
     /**
@@ -297,12 +328,29 @@ public class ORFinderGui extends Component {
     public void showPopupError(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
+
+    private void visualiseQuery(Query query) {
+        headerField.setText(query.getHeader());
+        setSequenceArea(query.getSequence());
+        orfComboBox.removeAllItems();
+
+        for (ORF orf : query.getOrfList()) {
+            orfComboBox.addItem(orf);
+        }
+    }
+
+    private void setResultTableModel() {
+        DefaultTableModel tableModel;
+        String[] columnNames;
+
+        tableModel = new DefaultTableModel();
+        columnNames = new String[]{"Accessie code", "Beschrijving", "Score", "Query cover", "E waarde", "Identity %",
+        "Start positie", "Stop positie"};
+
+        for (String columnName : columnNames) {
+            tableModel.addColumn(columnName);
+        }
+
+        resultTable.setModel(tableModel);
+    }
 }
-
-
-
-
-
-
-
-

@@ -83,4 +83,9 @@ public class ORF {
     public void setResultList(ArrayList<Result> resultList){
         this.resultList = resultList;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Pos %d - %d", startPosition, stopPosition);
+    }
 }
