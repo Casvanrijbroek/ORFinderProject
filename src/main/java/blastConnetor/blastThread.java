@@ -160,7 +160,7 @@ public class blastThread extends Thread {
         /**
          * set Blast programm. Blastp in this case
          */
-        props.setBlastProgram(BlastProgramEnum.blastp);
+        props.setBlastProgram(BlastProgramEnum.blastx);
         /**
          * Set database, NR in this case
          */

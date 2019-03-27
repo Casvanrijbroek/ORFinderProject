@@ -108,4 +108,21 @@ public class Query {
         orfList.add(newOrf);
     }
 
+
+    /**
+     * Returns the subsequence of the ORF
+     * @param subStringOrf The orf
+     * @return String subsequence of the ORF
+     */
+    public String getSubSequence(ORF subStringOrf){
+        int start = subStringOrf.getStartPosition();
+        int stop = subStringOrf.getStopPosition();
+        if(start < stop){
+            return this.sequence.substring(start, stop);
+        } else {
+            return this.sequence.substring(stop,start);
+        }
+    }
 }
+
+

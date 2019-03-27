@@ -74,6 +74,7 @@ public class proteinBlast {
 
     /**
      * Counts the amount of Result within a given query.
+     *
      * @param query query to count the results of.
      * @return returns integer of amount of results of the given query
      */
@@ -99,7 +100,9 @@ public class proteinBlast {
         netIsAvailable();
         blastList = new ArrayList<blastThread>();
         for (ORF occOrf : occQuery.getOrfList()) {
-            blastList.add(new blastThread(queryString.substring(occOrf.getStartPosition(), occOrf.getStopPosition()), occOrf, occQuery));
+            blastList.add(new blastThread(
+                    this.occQuery.getSubSequence(occOrf)
+                    , occOrf, occQuery));
             blastList.get(blastList.size() - 1).start();
             Thread.sleep(10500);
         }
