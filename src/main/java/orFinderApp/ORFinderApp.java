@@ -22,6 +22,7 @@ import java.sql.SQLException;
  *
  * @author Cas van Rijbroek
  * @version 0.3
+ * 27-03-2019
  */
 public class ORFinderApp {
     /**
@@ -37,6 +38,7 @@ public class ORFinderApp {
      * The ProteinBlast object used to BLAST protein sequences via the NCBI BLAST server.
      */
     private proteinBlast proteinBlast;
+    private ORFinderGui orFinderGui;
 
     /**
      * The static main method that sets up the application. This is where the GUI is visualised.
@@ -44,27 +46,27 @@ public class ORFinderApp {
      * @param args no args are expected to be given since this application is not designed for command line usage
      */
     public static void main(String[] args) {
-        try {
-            ORFinderGui gui = new ORFinderGui();
-            JFrame frame = new JFrame();
-            frame.setContentPane(gui.getGui());
-            frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
-                    Paths.get("src", "main", "resources", "icon.jpg").toString()));
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack();
-            frame.setVisible(true);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
+        new ORFinderApp();
     }
 
     /**
      * In this constructor instance variables will be set as needed from the different packages. This includes a
      * Connector object to communicate with the database, ...
      */
-    ORFinderApp() {
+    private ORFinderApp() {
+        JFrame frame;
+
         databaseConnector = new Connector();
         proteinBlast = new proteinBlast();
+        orFinderGui = new ORFinderGui(this);
+
+        frame = new JFrame();
+        frame.setContentPane(orFinderGui.getGui());
+        frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
+                Paths.get("src", "main", "resources", "icon.jpg").toString()));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     /**
@@ -81,7 +83,7 @@ public class ORFinderApp {
      *
      * @return value of query
      */
-    Query getQuery() {
+    public Query getQuery() {
         return query;
     }
 
@@ -92,18 +94,23 @@ public class ORFinderApp {
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value a String with the attribute that is to be searched on
+     * @return true if the fetch was successful, else false
      */
-    public void getQueryDatabase(SearchOption searchOption, String value) {
+    public boolean getQueryDatabase(SearchOption searchOption, String value) {
         try {
             databaseConnector.makeConnection();
             query = databaseConnector.getQuery(searchOption, value);
             databaseConnector.closeConnection();
 
-            //TODO show query in the user interface
+            return true;
         } catch (SQLException err) {
-            //TODO do something with the user interface
+            handleSQLException(err, "ophalen");
+
+            return false;
         } catch (ConnectionException err) {
-            //TODO do something with the user interface
+            handleConnectionException(err);
+
+            return false;
         }
     }
 
@@ -113,9 +120,10 @@ public class ORFinderApp {
      *
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value an integer with the identifier that is to be searched on
+     * @return true if the fetch was successful, else false
      */
-    public void getQueryDatabase(SearchOption searchOption, int value) {
-        getQueryDatabase(searchOption, String.valueOf(value));
+    public boolean getQueryDatabase(SearchOption searchOption, int value) {
+        return getQueryDatabase(searchOption, String.valueOf(value));
     }
 
     /**
@@ -125,15 +133,21 @@ public class ORFinderApp {
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value a String with the attribute that is to be searched on
      */
-    public void deleteQueryDatabase(SearchOption searchOption, String value) {
+    public boolean deleteQueryDatabase(SearchOption searchOption, String value) {
         try {
             databaseConnector.makeConnection();
             databaseConnector.deleteQuery(searchOption, value);
             databaseConnector.closeConnection();
+
+            return true;
         } catch(SQLException err) {
+            handleSQLException(err, "verwijderen");
 
+            return false;
         } catch (ConnectionException err) {
+            handleConnectionException(err);
 
+            return false;
         }
     }
 
@@ -144,8 +158,8 @@ public class ORFinderApp {
      * @param searchOption a SearchOption enum indicating the attribute type that is to be searched on
      * @param value an integer with the attribute that is to be searched on
      */
-    public void deleteQueryDatabase(SearchOption searchOption, int value) {
-        deleteQueryDatabase(searchOption, String.valueOf(value));
+    public boolean deleteQueryDatabase(SearchOption searchOption, int value) {
+        return deleteQueryDatabase(searchOption, String.valueOf(value));
     }
 
     /**
@@ -158,15 +172,21 @@ public class ORFinderApp {
      *
      * @param query the Query object that is to be inserted
      */
-    public void insertQueryDatabase(Query query) {
+    public boolean insertQueryDatabase(Query query) {
         try {
             databaseConnector.makeConnection();
             databaseConnector.insertQuery(query);
             databaseConnector.closeConnection();
+
+            return true;
         } catch (SQLException err) {
+            handleSQLException(err, "toevoegen");
 
+            return false;
         } catch (ConnectionException err) {
+            handleConnectionException(err);
 
+            return false;
         }
     }
 
@@ -175,17 +195,43 @@ public class ORFinderApp {
      * have to be present in the Query for this method to work. It handles exceptions that can be thrown by the blast
      * method.
      */
-    public void proteinBlastQuery() {
-        if (!hasQuery()) {
-            //TODO show in GUI
+    public boolean proteinBlastQuery() {
+        try {
+            proteinBlast.blast(query);
+
+            return true;
+        } catch (NoBlastConnectionException | InterruptedException err) {
+            orFinderGui.showPopupError(err.getMessage());
+            orFinderGui.showPopupError(err.getMessage());
+
+            return false;
+        }
+    }
+
+    private void handleSQLException(SQLException err, String action) {
+        if (err.getMessage().equals("Illegal operation on empty result set.")) {
+            orFinderGui.setStatusLabel("De opgegeven header heeft niks opgeleverd in de database");
+
+            return;
+        } else if (err.getMessage().contains("Communications link failure")) {
+            orFinderGui.setStatusLabel("Er kon geen connectie gemaakt worden met de database, controleer uw " +
+                    "internetverbinding");
+
+            return;
+        }
+
+        orFinderGui.showPopupError(String.format("Een probleem heeft zich voorgedaan tijdens het %s van een " +
+                "resultaat uit de database.\nNeem contact op met het systeembeheer en laat aub de volgende error " +
+                "zien:\nSQLState: %s\nError code: %s\nMessage: %s",
+                action, err.getSQLState(), err.getErrorCode(), err.getMessage()));
+    }
+
+    private void handleConnectionException(ConnectionException err) {
+        if (err.getMessage().equals("Please create a connection first")) {
+            orFinderGui.showPopupError("Er heeft zich een interne fout voorgedaan in de applicatie\n" +
+                    "Neem contact op met systeem beheer\nERROR code: CONN.connector1");
         } else {
-            try {
-                proteinBlast.blast(query);
-            } catch (NoBlastConnectionException err) {
-                //TODO show in GUI
-            } catch (InterruptedException err) {
-                //TODO show in GUI
-            }
+            orFinderGui.setStatusLabel(err.getMessage());
         }
     }
 

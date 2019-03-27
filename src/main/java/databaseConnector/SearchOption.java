@@ -5,6 +5,7 @@ package databaseConnector;
  *
  * @author Cas van Rijbroek
  * @version 1.0
+ * 27-03-2019
  */
 public enum SearchOption {
     NAME("name"), ID("header_id");
