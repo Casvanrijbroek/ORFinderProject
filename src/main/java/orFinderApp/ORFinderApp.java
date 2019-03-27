@@ -202,7 +202,6 @@ public class ORFinderApp {
             return true;
         } catch (NoBlastConnectionException | InterruptedException err) {
             orFinderGui.showPopupError(err.getMessage());
-            orFinderGui.showPopupError(err.getMessage());
 
             return false;
         }
@@ -233,14 +232,5 @@ public class ORFinderApp {
         } else {
             orFinderGui.setStatusLabel(err.getMessage());
         }
-    }
-
-    /**
-     * Checks if the query has been initialised.
-     *
-     * @return true if the query is initialised, else false.
-     */
-    private boolean hasQuery() {
-        return (query != null);
     }
 }
