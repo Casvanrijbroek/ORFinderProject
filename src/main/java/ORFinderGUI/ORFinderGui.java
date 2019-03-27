@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * results. The user can also save these results either locally or in the remote database.
  *
  * @author Elco van Rijswijk, Cas van Rijbroek
- * @version 1.1
+ * @version 1.2
  * 27-03-2019
  */
 public class ORFinderGui extends Component {
@@ -66,6 +66,8 @@ public class ORFinderGui extends Component {
     private JLabel loadFileLabel;
     private JScrollPane resultScroll;
     private JLabel resultLabel;
+    private JButton blastButton;
+    private JButton findORFButton;
 
     /**
      * This constructor sets up the class is several ways:
@@ -89,6 +91,8 @@ public class ORFinderGui extends Component {
         }
 
         orfComboBox.addActionListener(evt -> showResults());
+        findORFButton.addActionListener(evt -> findORFS());
+        blastButton.addActionListener(evt -> blast());
         browseButton.addActionListener(evt -> browse());
         databaseButton.addActionListener(evt -> executeDatabase());
         localButton.addActionListener(evt -> executeLocal());
@@ -107,21 +111,21 @@ public class ORFinderGui extends Component {
         setORFinderApp(orFinderApp);
     }
 
-    private void showResults() {
-        DefaultTableModel tableModel;
-        ORF orf;
+    private void findORFS() {
+        if (hasNoHeader()) {
+            return;
+        }
 
-        tableModel = (DefaultTableModel) resultTable.getModel();
-        orf = (ORF) orfComboBox.getSelectedItem();
+        orFinderApp.setQuery(new Query(headerField.getText(), sequenceArea.getText()));
+        //TODO find orfs
+        visualiseQuery(orFinderApp.getQuery());
+    }
 
-        tableModel.setRowCount(0);
-
-        if (orf != null) {
-            for (Result result : orf.getResultList()) {
-                tableModel.addRow(new Object[]{result.getAccession(), result.getDescription(), result.getScore(),
-                        result.getQueryCover(), result.getpValue(), result.getIdentity(), result.getStartPosition(),
-                        result.getStopPosition()});
-            }
+    private void blast() {
+        if (orFinderApp.getQuery().getOrfList().size() <= 0) {
+            setStatusLabel("Er zijn (nog) geen ORFs om te blasten");
+        } else if (orFinderApp.proteinBlastQuery()) {
+            visualiseQuery(orFinderApp.getQuery());
         }
     }
 
@@ -268,6 +272,24 @@ public class ORFinderGui extends Component {
         } else
             throw new WrongfileException("Bestand: " + fileName + " is een bestand dat niet bestaat uit DNA, gebruik alstublieft een ander bestand");
 
+    }
+
+    private void showResults() {
+        DefaultTableModel tableModel;
+        ORF orf;
+
+        tableModel = (DefaultTableModel) resultTable.getModel();
+        orf = (ORF) orfComboBox.getSelectedItem();
+
+        tableModel.setRowCount(0);
+
+        if (orf != null) {
+            for (Result result : orf.getResultList()) {
+                tableModel.addRow(new Object[]{result.getAccession(), result.getDescription(), result.getScore(),
+                        result.getQueryCover(), result.getpValue(), result.getIdentity(), result.getStartPosition(),
+                        result.getStopPosition()});
+            }
+        }
     }
 
     /**

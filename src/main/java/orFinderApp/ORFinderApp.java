@@ -202,7 +202,6 @@ public class ORFinderApp {
             return true;
         } catch (NoBlastConnectionException | InterruptedException err) {
             orFinderGui.showPopupError(err.getMessage());
-            orFinderGui.showPopupError(err.getMessage());
 
             return false;
         }
