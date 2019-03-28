@@ -16,20 +16,17 @@ import java.io.*;
  */
 
 public class LocalSave {
-    private JOptionPane YesNoPop;
-    private FileOutputStream fout = null;
-    private ObjectOutputStream oos = null;
 
     /**
      * Writes the file containing the Query object.
+     *
      * @param query Object containing the information to be stored.
      * @throws FileNotFoundException No access to create folder.
-     * @throws NullPointerException No ORFs within the query
+     * @throws NullPointerException  No ORFs within the query
      */
     public void saveResults(Query query) throws FileNotFoundException, NullPointerException {
         String filePath = createResultsFolder("SavedResults");
         chooseOverwriteFile(filePath + File.separator + query.getHeader());
-      //  createResultsFolder(createResultsFolder(filePath + File.separator + query.getHeader()));
         FileWriter writeFiles;
         try {
             writeFiles = new FileWriter(filePath + File.separator + query.getHeader());
@@ -44,13 +41,11 @@ public class LocalSave {
         } catch (NullPointerException NPE) {
             throw new NullPointerException("Geen ORFs gevonden in het opgegeven query.");
         }
-
-
-
     }
 
     /**
      * Creates folder if so needed and doesn't exist yet.
+     *
      * @param addDir
      * @return
      */
@@ -63,11 +58,12 @@ public class LocalSave {
         return addDir;
     }
 
+
     private String writeORF(ORF orf) {
         try {
             StringBuilder orfBuilder = new StringBuilder();
             orfBuilder.append("\n").append(orf.getStartPosition())
-                    .append(";").append(orf.getStopPosition()).append("\n");
+                    .append("\t").append(orf.getStopPosition()).append("\n");
             for (Result occResult : orf.getResultList()) {
                 orfBuilder.append(writeResults(occResult)).append("\n");
             }
@@ -77,20 +73,29 @@ public class LocalSave {
         }
     }
 
+    /**
+     * Returns a String containing the information stored in the result object in a tdf.
+     * @param result Result object to have to data extracted from.
+     * @return Returns a String containing the information of the Result object.
+     */
     private String writeResults(Result result) {
-        return result.getAccession() + ";" +
-                result.getDescription() + ";" +
-                result.getIdentity() + ";" +
-                result.getpValue() + ";" +
-                result.getQueryCover() + ";" +
-                result.getScore() + ";" +
-                result.getStartPosition() + ";" +
+        return result.getAccession() + "\t" +
+                result.getDescription() + "\t" +
+                result.getIdentity() + "\t" +
+                result.getpValue() + "\t" +
+                result.getQueryCover() + "\t" +
+                result.getScore() + "\t" +
+                result.getStartPosition() + "\t" +
                 result.getStopPosition();
     }
 
-    private void chooseOverwriteFile(String filePath){
+    /**
+     * Calls optionPane to overwrite the existing file with the same header.
+     * @param filePath File path of file to to overwrite.
+     */
+    private void chooseOverwriteFile(String filePath) {
         File existFile = new File(filePath);
-        if (existFile.exists()){
+        if (existFile.exists()) {
             Object[] options = {"Ja, Graag",
                     "Nee, bedankt"};
             int n = JOptionPane.showOptionDialog(null,
