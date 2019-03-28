@@ -59,6 +59,11 @@ public class LocalSave {
     }
 
 
+    /**
+     * Creates String containing the information of the ORF given.
+     * @param orf ORF object to have he information extracted from.
+     * @return String containing the information of the given ORF.
+     */
     private String writeORF(ORF orf) {
         try {
             StringBuilder orfBuilder = new StringBuilder();
@@ -75,6 +80,7 @@ public class LocalSave {
 
     /**
      * Returns a String containing the information stored in the result object in a tdf.
+     *
      * @param result Result object to have to data extracted from.
      * @return Returns a String containing the information of the Result object.
      */
@@ -91,9 +97,11 @@ public class LocalSave {
 
     /**
      * Calls optionPane to overwrite the existing file with the same header.
+     *
      * @param filePath File path of file to to overwrite.
+     * @exception NullPointerException Throws when the user decides not to overwrite the file.
      */
-    private void chooseOverwriteFile(String filePath) {
+    private void chooseOverwriteFile(String filePath) throws NullPointerException {
         File existFile = new File(filePath);
         if (existFile.exists()) {
             Object[] options = {"Ja, Graag",
@@ -107,10 +115,9 @@ public class LocalSave {
                     null,
                     options,
                     options[1]);
+            if (n == 1) {
+                throw new NullPointerException("Bestand is niet opgeslagen");
+            }
         }
-        System.out.println("test");
-
     }
-
-
 }
