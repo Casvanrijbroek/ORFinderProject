@@ -1,6 +1,7 @@
 package orFinderApp;
 
 import ORFinderGUI.ORFinderGui;
+import OrfFinderFinder.OrfFinderFinder;
 import blastConnetor.NoBlastConnectionException;
 import blastConnetor.proteinBlast;
 import databaseConnector.ConnectionException;
@@ -39,6 +40,7 @@ public class ORFinderApp {
      */
     private proteinBlast proteinBlast;
     private ORFinderGui orFinderGui;
+    private OrfFinderFinder orFinderFinder;
 
     /**
      * The static main method that sets up the application. This is where the GUI is visualised.
@@ -58,6 +60,7 @@ public class ORFinderApp {
 
         databaseConnector = new Connector();
         proteinBlast = new proteinBlast();
+        orFinderFinder = new OrfFinderFinder();
         orFinderGui = new ORFinderGui(this);
 
         frame = new JFrame();
@@ -202,10 +205,13 @@ public class ORFinderApp {
             return true;
         } catch (NoBlastConnectionException | InterruptedException err) {
             orFinderGui.showPopupError(err.getMessage());
-            orFinderGui.showPopupError(err.getMessage());
 
             return false;
         }
+    }
+
+    public void findORFS() {
+        orFinderFinder.HandleQuery(query);
     }
 
     private void handleSQLException(SQLException err, String action) {
@@ -233,14 +239,5 @@ public class ORFinderApp {
         } else {
             orFinderGui.setStatusLabel(err.getMessage());
         }
-    }
-
-    /**
-     * Checks if the query has been initialised.
-     *
-     * @return true if the query is initialised, else false.
-     */
-    private boolean hasQuery() {
-        return (query != null);
     }
 }

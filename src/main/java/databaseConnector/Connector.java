@@ -11,6 +11,8 @@ import java.util.ArrayList;
  * This class can be used to make a connection to the owe7_pg2 database hosted on azure.com.
  * Using this class you can retrieve data from the database by submitting queries or make specific changes.
  *
+ * Known bug: The deletion of a non-existing result is considered a success.
+ *
  * @author Cas van Rijbroek
  * @version 1.3
  * 27-03-2019

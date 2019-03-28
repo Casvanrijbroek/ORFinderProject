@@ -45,7 +45,16 @@ public class Query {
      */
     public Query(String header, String sequence) {
         this.header = header;
-        this.sequence = sequence;
+        setSequence(sequence);
+    }
+
+    /**
+     * Sets sequence
+     *
+     * @param sequence sets this value into the class variable
+     */
+    void setSequence(String sequence) {
+        this.sequence = sequence.replaceAll("\n", "");
     }
 
     /**
