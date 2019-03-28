@@ -29,6 +29,9 @@ public class LocalSave {
         chooseOverwriteFile(filePath + File.separator + query.getHeader());
         FileWriter writeFiles;
         try {
+            if(query.getOrfList().size() == 0){
+                throw new NullPointerException();
+            }
             writeFiles = new FileWriter(filePath + File.separator + query.getHeader());
             writeFiles.append(query.getHeader()).append(";").append(query.getSequence()).append("\n");
             for (ORF occORF : query.getOrfList()) {
