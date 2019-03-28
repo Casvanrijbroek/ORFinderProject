@@ -57,31 +57,37 @@ public class OrfFinderFinder {
         int stop = 0;
 
         while (Continue) {
-            start = frame.indexOf(startCodon, stop);
 
+            start = frame.indexOf(startCodon, start + 1);
             if (start < 0) {
                 Continue = false;
             }
 
-            if (start > 0) {
-                stop = FindStopCodon(frame, start);
+            int already = stop - start;
 
+            if (already > 0 && already % 3 == 0) {
 
-                if ((stop - start > 100)) {
-                    //String gene = frame.substring(start, stop + 3);
-                    //if (!allGenes.contains(gene)) {
-                    //  allGenes.add(gene);
-                    //}
-                    if (Forward) {
-                        query.addOrfList(new ORF(start, (stop + 3)));
+            } else {
+
+                if (start > 0) {
+                    stop = FindStopCodon(frame, start);
+
+                    if ((stop - start > 100)) {
+                        //String gene = frame.substring(start, stop + 3);
+                        //if (!allGenes.contains(gene)) {
+                        //  allGenes.add(gene);
+                        //}
+                        if (Forward) {
+                            query.addOrfList(new ORF(start, (stop + 3)));
+                        }
+
+                        if (!Forward) {
+                            int startfor = (frame.length() - start);
+                            int stopfor = (frame.length() - stop);
+                            query.addOrfList(new ORF(startfor, (stopfor - 3)));
+                        }
+                        System.out.println("From: " + start + " to " + stop + " Gene: ");
                     }
-
-                    if (!Forward) {
-                        int startfor = (frame.length() - start);
-                        int stopfor = (frame.length() - stop);
-                        query.addOrfList(new ORF(startfor, (stopfor - 3)));
-                    }
-                    //System.out.println("From: " + start + " to " + stop + " Gene: ");
                 }
             }
         }
