@@ -2,6 +2,8 @@ package OrfFinderFinder;
 
 import orFinderApp.ORF;
 import orFinderApp.Query;
+
+import java.util.HashSet;
 import java.util.Stack;
 
 /**
@@ -41,7 +43,7 @@ public class OrfFinderFinder {
      */
     public void FindGenes(String frame, Query query) {
 
-        Stack<Integer> StopCodon = new Stack<>();
+        HashSet<Integer> StopCodon= new HashSet<>();
 
         int start = 0;
         int stop = 0;
@@ -55,7 +57,7 @@ public class OrfFinderFinder {
                 stop = FindStopCodon(frame, start);
 
                 if ((stop - start > 100) && !StopCodon.contains(stop)) {
-                    StopCodon.push(stop);
+                    StopCodon.add(stop);
 
                     if (Forward) {
                         query.addOrfList(new ORF((start + 1), (stop + 3)));
