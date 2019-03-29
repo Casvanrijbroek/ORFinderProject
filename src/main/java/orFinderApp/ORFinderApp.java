@@ -26,7 +26,7 @@ import java.sql.SQLException;
  * to scale the application to handle more queries at once.
  *
  * @author Cas van Rijbroek
- * @version 0.3
+ * @version 1.0
  * 27-03-2019
  */
 public class ORFinderApp {
