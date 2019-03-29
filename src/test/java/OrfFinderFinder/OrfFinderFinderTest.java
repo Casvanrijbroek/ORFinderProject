@@ -295,17 +295,7 @@ public class OrfFinderFinderTest {
             "TTGATATGAGTTTATGTACGGATCAAGAGTGTCGGTTTTTCGATTTTTGTATAAAATCGAAATTTTTTTT\n" +
             "TTGATTTTTCGATTTTCCCTGAAAAACACACAATTAAATGTCACTCTTGGTACGGATATTGCTAAAT");
 
-    @Test
-    public void FindOrfTest(){
-        OrfFinderFinder test = new OrfFinderFinder();
-        assertEquals(0, test.FindGenes(testQuery.getSequence(), testQuery).size());
-    }
 
-    @Test
-    public void GenReadingFrameTest(){
-        OrfFinderFinder test = new OrfFinderFinder();
-        assertEquals(2, test.GenReadingFrame(testQuery.getSequence()).size());
-    }
 
     @Test
     public void HandleQueryTest() {
