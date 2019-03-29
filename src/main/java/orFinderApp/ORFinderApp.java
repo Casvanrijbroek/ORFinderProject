@@ -7,9 +7,11 @@ import blastConnetor.proteinBlast;
 import databaseConnector.ConnectionException;
 import databaseConnector.Connector;
 import databaseConnector.SearchOption;
+import localDataManagement.LocalSave;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 
@@ -41,6 +43,7 @@ public class ORFinderApp {
     private proteinBlast proteinBlast;
     private ORFinderGui orFinderGui;
     private OrfFinderFinder orFinderFinder;
+    private LocalSave resultWriter;
 
     /**
      * The static main method that sets up the application. This is where the GUI is visualised.
@@ -62,6 +65,7 @@ public class ORFinderApp {
         proteinBlast = new proteinBlast();
         orFinderFinder = new OrfFinderFinder();
         orFinderGui = new ORFinderGui(this);
+        resultWriter = new LocalSave();
 
         frame = new JFrame();
         frame.setContentPane(orFinderGui.getGui());
@@ -188,6 +192,19 @@ public class ORFinderApp {
             return false;
         } catch (ConnectionException err) {
             handleConnectionException(err);
+
+            return false;
+        }
+    }
+
+    public boolean saveQueryLocal(Query query) {
+        try {
+            resultWriter.saveResults(query);
+
+            return true;
+        } catch (FileNotFoundException | NullPointerException err) {
+            orFinderGui.showPopupError(err.getMessage());
+            orFinderGui.setStatusLabel("Het resultaat is niet opgeslagen");
 
             return false;
         }

@@ -140,7 +140,13 @@ public class ORFinderGui extends Component {
         if (fetchResultButton.isSelected()) {
 
         } else if (saveResultButton.isSelected()) {
+            orFinderApp.getQuery().setHeader(headerField.getText());
 
+            if (orFinderApp.saveQueryLocal(orFinderApp.getQuery())) {
+                setStatusLabel("Het resultaat is opgeslagen");
+            } else {
+                setStatusLabel("Het resultaat is niet opgeslagen");
+            }
         } else if (deleteResultButton.isSelected()) {
 
         }
