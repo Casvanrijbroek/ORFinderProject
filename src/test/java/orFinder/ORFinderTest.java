@@ -1,4 +1,4 @@
-package OrfFinderFinder;
+package orFinder;
 import orFinderApp.Query;
 import org.junit.Test;
 
@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class OrfFinderFinderTest {
+public class ORFinderTest {
     public static Query testQuery = new Query("test", "GGCGAATTGTAATCGCTCAACGGCAGTTATCAAGTTGTCATCTGCAACTTTTATGAATGATTTTTTT\n" +
             "AAAAAGTTATTTGTTGTCATTTTTCTTTTATTAATTATTACGTATATTATACGTATCATGCGAGTTTAGC\n" +
             "TTTCCAACCCCCCGCGAACTCTTTTTACTTTTTTTTTTTTTAACTTTTGTCTTTTTTGTCCTTTCTTGGC\n" +
@@ -299,7 +299,7 @@ public class OrfFinderFinderTest {
 
     @Test
     public void HandleQueryTest() {
-        OrfFinderFinder test = new OrfFinderFinder();
+        ORFinder test = new ORFinder();
         test.HandleQuery(testQuery);
     }
 

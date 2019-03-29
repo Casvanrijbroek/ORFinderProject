@@ -1,17 +1,16 @@
-package OrfFinderFinder;
+package orFinder;
 
 import orFinderApp.ORF;
 import orFinderApp.Query;
 
 import java.util.HashSet;
-import java.util.Stack;
 
 /**
  * ORF finder finds Genes on the basis of start and stop codons
  * Class excepts Query finds start and stops
  * The Query adds an ORF object with the start and stop position of the founded ORF
  */
-public class OrfFinderFinder {
+public class ORFinder {
 
     final static String startCodon = "ATG";
     final static String stop1Codon = "TAA";
@@ -72,7 +71,6 @@ public class OrfFinderFinder {
         }
 
     }
-
     /**
      * FindStopCodon accepts the frame with its start position and if a stop codon is found
      * returns the stop position

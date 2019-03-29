@@ -1,17 +1,19 @@
 package orFinderApp;
 
-import ORFinderGUI.ORFinderGui;
-import OrfFinderFinder.OrfFinderFinder;
+import localDataManagement.ResultDeletor;
+import localDataManagement.ResultOpener;
+import orFinderGUI.ORFinderGui;
+import orFinder.ORFinder;
 import blastConnetor.NoBlastConnectionException;
 import blastConnetor.proteinBlast;
 import databaseConnector.ConnectionException;
 import databaseConnector.Connector;
 import databaseConnector.SearchOption;
-import localDataManagement.LocalSave;
+import localDataManagement.ResultSaver;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 
@@ -42,8 +44,10 @@ public class ORFinderApp {
      */
     private proteinBlast proteinBlast;
     private ORFinderGui orFinderGui;
-    private OrfFinderFinder orFinderFinder;
-    private LocalSave resultWriter;
+    private ORFinder orFinderFinder;
+    private ResultSaver resultWriter;
+    private ResultDeletor resultDeletor;
+    private ResultOpener resultOpener;
 
     /**
      * The static main method that sets up the application. This is where the GUI is visualised.
@@ -63,9 +67,11 @@ public class ORFinderApp {
 
         databaseConnector = new Connector();
         proteinBlast = new proteinBlast();
-        orFinderFinder = new OrfFinderFinder();
+        orFinderFinder = new ORFinder();
         orFinderGui = new ORFinderGui(this);
-        resultWriter = new LocalSave();
+        resultWriter = new ResultSaver();
+        resultDeletor = new ResultDeletor();
+        resultOpener = new ResultOpener();
 
         frame = new JFrame();
         frame.setContentPane(orFinderGui.getGui());
@@ -202,9 +208,32 @@ public class ORFinderApp {
             resultWriter.saveResults(query);
 
             return true;
-        } catch (FileNotFoundException | NullPointerException err) {
+        } catch (IOException | NullPointerException err) {
             orFinderGui.showPopupError(err.getMessage());
-            orFinderGui.setStatusLabel("Het resultaat is niet opgeslagen");
+
+            return false;
+        }
+    }
+
+    public boolean deleteQueryLocal(String header) {
+        try {
+            resultDeletor.DeleteLocalSave(header);
+
+            return true;
+        } catch (IOException err) {
+            orFinderGui.showPopupError(err.getMessage());
+
+            return false;
+        }
+    }
+
+    public boolean openQueryLocal(String header) {
+        try {
+            setQuery(resultOpener.openHead(header));
+
+            return true;
+        } catch (IOException err) {
+            orFinderGui.showPopupError(err.getMessage());
 
             return false;
         }

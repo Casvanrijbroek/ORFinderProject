@@ -1,4 +1,4 @@
-package ORFinderGUI;
+package orFinderGUI;
 
 public class EmptyException extends Exception {
     public EmptyException(String msg) {

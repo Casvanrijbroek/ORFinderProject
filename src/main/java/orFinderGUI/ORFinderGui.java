@@ -1,5 +1,4 @@
-package ORFinderGUI;
-
+package orFinderGUI;
 
 import databaseConnector.SearchOption;
 import orFinderApp.ORF;
@@ -138,17 +137,55 @@ public class ORFinderGui extends Component {
      */
     private void executeLocal() {
         if (fetchResultButton.isSelected()) {
-
+            openLocal();
         } else if (saveResultButton.isSelected()) {
-            orFinderApp.getQuery().setHeader(headerField.getText());
-
-            if (orFinderApp.saveQueryLocal(orFinderApp.getQuery())) {
-                setStatusLabel("Het resultaat is opgeslagen");
-            } else {
-                setStatusLabel("Het resultaat is niet opgeslagen");
-            }
+            saveLocal();
         } else if (deleteResultButton.isSelected()) {
+            deleteLocal();
+        }
+    }
 
+    private void saveLocal() {
+        if (orFinderApp.getQuery() == null) {
+            setStatusLabel("Geef aub eerst een resultaat op");
+
+            return;
+        }
+        orFinderApp.getQuery().setHeader(headerField.getText());
+
+        if (orFinderApp.saveQueryLocal(orFinderApp.getQuery())) {
+            setStatusLabel("Het resultaat is opgeslagen");
+        } else {
+            setStatusLabel("Het resultaat is niet opgeslagen");
+        }
+    }
+
+    private void deleteLocal() {
+        if (hasNoHeader()) {
+            showPopupError("Voer eerst een header in");
+            setStatusLabel("Resultaat niet verwijderd");
+
+            return;
+        }
+        if (orFinderApp.deleteQueryLocal(headerField.getText())) {
+            setStatusLabel("Resultaat verwijderd");
+        } else {
+            setStatusLabel("Resultaat niet verwijderd");
+        }
+    }
+
+    private void openLocal() {
+        if (hasNoHeader()) {
+            showPopupError("Voer eerst een header in");
+            setStatusLabel("Resultaat niet ingeladen");
+
+            return;
+        }
+        if (orFinderApp.openQueryLocal(headerField.getText())) {
+            visualiseQuery(orFinderApp.getQuery());
+            setStatusLabel("Resultaat ingeladen");
+        } else {
+            setStatusLabel("Resultaat niet ingeladen");
         }
     }
 

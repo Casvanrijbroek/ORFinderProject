@@ -14,7 +14,7 @@ import java.io.IOException;
  * @version 1.0
  */
 
-public class DeleteLocalSave {
+public class ResultDeletor {
 
     /**
      * This method creates the filepath for the file to be deleted and calls the checkfile method.
@@ -22,7 +22,8 @@ public class DeleteLocalSave {
      * @throws FileNotFoundException Throws if the file is not found within the saved results.
      */
     public void DeleteLocalSave(String header) throws IOException {
-        String filepath = System.getProperty("user.dir") + File.separator + "SavedResults" + File.separator + header;
+        String filepath = System.getProperty("user.dir") + File.separator + "SavedResults" + File.separator +
+                header.replaceAll(" ", "_").replaceAll(">", "");
         checkFile(filepath);
     }
 
@@ -34,14 +35,6 @@ public class DeleteLocalSave {
      */
     private void checkFile(String fileAvalible) throws IOException {
         File newFile = new File(fileAvalible);
-        if (!(newFile.exists())) {
-            //todo betere shit schrijven
-            throw new FileNotFoundException("Header niet gevonden in de lokale bestanden.");
-        } else {
-            if(newFile.delete()){
-                throw new IOException("Er is geen toegang van de aplicatie naar dit bestand. Neem contact op " +
-                        "met de beheerder van dit apperaat");
-            }
-        }
+            newFile.delete();
     }
 }

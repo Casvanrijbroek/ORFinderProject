@@ -1,14 +1,14 @@
 package blastConnector;
 
-import blastConnetor.NoBlastConnectionException;
 import blastConnetor.proteinBlast;
-import localDataManagement.LocalSave;
+import localDataManagement.ResultSaver;
 import orFinderApp.ORF;
 import orFinderApp.Query;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,12 +41,8 @@ public class ConnectionBlastTest {
 
 
     @Test
-    public void blastSequence() throws FileNotFoundException, NoBlastConnectionException, InterruptedException {
-            //testBlast.blast(query));
-        LocalSave newsave = new LocalSave();
+    public void blastSequence() throws IOException, URISyntaxException {
+        ResultSaver newsave = new ResultSaver();
         newsave.saveResults(query);
     }
-
-
-
 }

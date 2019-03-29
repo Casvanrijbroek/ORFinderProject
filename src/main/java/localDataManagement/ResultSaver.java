@@ -15,7 +15,7 @@ import java.io.*;
  * @version 1.0
  */
 
-public class LocalSave {
+public class ResultSaver {
 
     /**
      * Writes the file containing the Query object.
@@ -24,23 +24,22 @@ public class LocalSave {
      * @throws FileNotFoundException No access to create folder.
      * @throws NullPointerException  No ORFs within the query
      */
-    public void saveResults(Query query) throws FileNotFoundException, NullPointerException {
+    public void saveResults(Query query) throws IOException, NullPointerException {
         String filePath = createResultsFolder("SavedResults");
-        chooseOverwriteFile(filePath + File.separator + query.getHeader());
+        chooseOverwriteFile(filePath + File.separator + query.getHeader()
+                .replaceAll(" ", "_").replaceAll(">", ""));
         FileWriter writeFiles;
         try {
             if(query.getOrfList().size() == 0){
                 throw new NullPointerException();
             }
-            writeFiles = new FileWriter(filePath + File.separator + query.getHeader());
+            writeFiles = new FileWriter(filePath + File.separator + query.getHeader()
+                    .replaceAll(" ", "_").replaceAll(">", ""));
             writeFiles.append(query.getHeader()).append(";").append(query.getSequence()).append("\n");
             for (ORF occORF : query.getOrfList()) {
                 writeFiles.append(writeORF(occORF));
             }
             writeFiles.close();
-        } catch (IOException FNFE) {
-            throw new FileNotFoundException("Geen bevoegdheid om folders aan te maken. Neem contact op met uw" +
-                    " beheerder.");
         } catch (NullPointerException NPE) {
             throw new NullPointerException("Geen ORFs gevonden in het opgegeven query.");
         }

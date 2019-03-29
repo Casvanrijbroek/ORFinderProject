@@ -15,7 +15,7 @@ import java.util.Arrays;
  * @version 1.0
  */
 
-public class openSave {
+public class ResultOpener {
 
     /**
      * String with the files path.
@@ -41,8 +41,8 @@ public class openSave {
      * @throws IOException Throws FileNOtFoundException if the file is not found within the local data.
      */
     public Query openHead(String header) throws IOException {
-        this.filepath = System.getProperty("user.dir") + File.separator + "SavedResults" + File.separator + header;
-        checkFile(this.filepath);
+        this.filepath = System.getProperty("user.dir") + File.separator + "SavedResults" + File.separator + header
+                .replaceAll(" ", "_").replaceAll(">", "");
         readFile = new BufferedReader(new FileReader(this.filepath));
         String Line;
         StringBuilder SB = new StringBuilder();
@@ -54,19 +54,6 @@ public class openSave {
             throw new IOException("No acces to the given file. Please contact your network administrator.");
         }
         return fillQuery(SB.toString());
-    }
-
-    /**
-     * Checks to see if the given file is found within the local data.
-     * @param fileAvalible File path of the given file.
-     * @throws FileNotFoundException Throws when the given file is not found within the local data.
-     */
-    public void checkFile(String fileAvalible) throws FileNotFoundException {
-        File newFile = new File(fileAvalible);
-        if (!(newFile.exists())) {
-            //todo betere shit schrijven
-            throw new FileNotFoundException("Header niet gevonden in de lokale bestanden.");
-        }
     }
 
     /**
