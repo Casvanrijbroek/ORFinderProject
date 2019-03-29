@@ -2,7 +2,6 @@ package blastConnetor;
 
 import orFinderApp.ORF;
 import orFinderApp.Query;
-import orFinderApp.Result;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
  *
  * @author Lex Bosch
  * @version 1.0
+ * 29-03-2019
  */
 
 public class proteinBlast {
@@ -102,7 +102,7 @@ public class proteinBlast {
         for (ORF occOrf : occQuery.getOrfList()) {
             blastList.add(new blastThread(
                     this.occQuery.getSubSequence(occOrf)
-                    , occOrf, occQuery));
+                    , occOrf));
             blastList.get(blastList.size() - 1).start();
             Thread.sleep(10500);
         }

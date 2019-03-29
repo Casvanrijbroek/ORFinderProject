@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  * results. The user can also save these results either locally or in the remote database.
  *
  * @author Elco van Rijswijk, Cas van Rijbroek
- * @version 1.3
+ * @version 1.4
  * 27-03-2019
  */
 public class ORFinderGui extends Component {
@@ -72,7 +72,8 @@ public class ORFinderGui extends Component {
      * This constructor sets up the class is several ways:
      * 1. It sets the look of the JFileChooser in the windows fashion.
      * 2. It adds actionListeners to the buttons.
-     * 3. It sets the ORFinderApp belonging to the GUI.
+     * 3. It sets up the table model for the resultTable.
+     * 4. It sets the ORFinderApp belonging to the GUI.
      *
      * @param orFinderApp the ORFinderApp belonging to the GUI
      */
@@ -98,7 +99,7 @@ public class ORFinderGui extends Component {
         loadFileButton.addActionListener(evt -> {
             try {
                 openFile();
-            } catch (EmptyException | WrongfileException | IOException e) {
+            } catch (EmptyException | WrongFileException | IOException e) {
                 showPopupError(e.getMessage());
             }
         });
@@ -108,6 +109,9 @@ public class ORFinderGui extends Component {
         setORFinderApp(orFinderApp);
     }
 
+    /**
+     * Calls the ORFinderApp to search for ORFs in the given sequence.
+     */
     private void findORFS() {
         if (hasNoHeader()) {
             return;
@@ -122,6 +126,9 @@ public class ORFinderGui extends Component {
         visualiseQuery(orFinderApp.getQuery());
     }
 
+    /**
+     * Calls the ORFinderApp to blast the found ORFs.
+     */
     private void blast() {
         if (orFinderApp.getQuery() == null || orFinderApp.getQuery().getOrfList() == null ||
                 orFinderApp.getQuery().getOrfList().size() <= 0) {
@@ -132,7 +139,7 @@ public class ORFinderGui extends Component {
     }
 
     /**
-     * This method references local data handling methods when the user pressed the handle local button.
+     * This method references local data handling methods when the user presses the handle local button.
      * The method called is determined by the radiobutton selected by the user. Fetch result is the default option.
      */
     private void executeLocal() {
@@ -145,6 +152,9 @@ public class ORFinderGui extends Component {
         }
     }
 
+    /**
+     * Calls the ORFinderApp to save the results locally.
+     */
     private void saveLocal() {
         if (orFinderApp.getQuery() == null) {
             setStatusLabel("Geef aub eerst een resultaat op");
@@ -160,6 +170,9 @@ public class ORFinderGui extends Component {
         }
     }
 
+    /**
+     * Calls the ORFinderApp to delete results locally.
+     */
     private void deleteLocal() {
         if (hasNoHeader()) {
             showPopupError("Voer eerst een header in");
@@ -174,6 +187,9 @@ public class ORFinderGui extends Component {
         }
     }
 
+    /**
+     * Calls the ORFinderApp to open local results.
+     */
     private void openLocal() {
         if (hasNoHeader()) {
             showPopupError("Voer eerst een header in");
@@ -259,6 +275,9 @@ public class ORFinderGui extends Component {
         }
     }
 
+    /**
+     * Allows the user to select a file using a JFileChooser.
+     */
     private void browse() {
         File selectedFile;
 
@@ -270,18 +289,31 @@ public class ORFinderGui extends Component {
         }
     }
 
-    private void openFile() throws EmptyException, WrongfileException, IOException {
+    /**
+     * Opens the file related to the given file path.
+     *
+     * @throws EmptyException if the file doesn't exist
+     * @throws WrongFileException if the file contains more than 1 sequence
+     * @throws IOException if something goes wrong with the handling of the file
+     */
+    private void openFile() throws EmptyException, WrongFileException, IOException {
         String Filepath = filePathField.getText();
+
         if (Filepath.isEmpty()) {
             throw new EmptyException("Bestandspad bestaat niet, kies alstublieft een bestand via de 'bladeren' knop");
         } else {
             readFile(Filepath);
-
         }
-
     }
 
-    private void readFile(String path) throws WrongfileException, IOException {
+    /**
+     * Reads a FASTA file and extracts information from it.
+     *
+     * @param path the path of the file that is to be read
+     * @throws WrongFileException if the file contains more than 1 sequence
+     * @throws IOException if something goes wrong with the handling of the file
+     */
+    private void readFile(String path) throws WrongFileException, IOException {
         BufferedReader reader;
         String line;
         String header;
@@ -300,7 +332,7 @@ public class ORFinderGui extends Component {
 
         while ((line = reader.readLine()) != null) {
             if (line.startsWith(">")) {
-                throw new WrongfileException("Bestand: " + fileName + " is een file met meerdere sequenties, gebruik een fasta file met één sequentie");
+                throw new WrongFileException("Bestand: " + fileName + " is een file met meerdere sequenties, gebruik een fasta file met één sequentie");
             }
             sequenceBuilder.append(line);
         }
@@ -314,10 +346,13 @@ public class ORFinderGui extends Component {
             setSequenceArea(sequence);
 
         } else
-            throw new WrongfileException("Bestand: " + fileName + " is een bestand dat niet bestaat uit DNA, gebruik alstublieft een ander bestand");
+            throw new WrongFileException("Bestand: " + fileName + " is een bestand dat niet bestaat uit DNA, gebruik alstublieft een ander bestand");
 
     }
 
+    /**
+     * Visualises the BLAST results in the resultTable.
+     */
     private void showResults() {
         DefaultTableModel tableModel;
         ORF orf;
@@ -395,6 +430,11 @@ public class ORFinderGui extends Component {
         JOptionPane.showMessageDialog(null, message);
     }
 
+    /**
+     * Visualises the Query object in the GUI.
+     *
+     * @param query the Query that is to be visualised
+     */
     private void visualiseQuery(Query query) {
         headerField.setText(query.getHeader());
         setSequenceArea(query.getSequence());
@@ -407,6 +447,9 @@ public class ORFinderGui extends Component {
         }
     }
 
+    /**
+     * Sets the DefaultTableModel of the resultTable.
+     */
     private void setResultTableModel() {
         DefaultTableModel tableModel;
         String[] columnNames;

@@ -1,12 +1,12 @@
 package blastConnetor;
 
 /**
- * This exception can be thrown when no connection with the BLAST database is possible
+ * This exception can be thrown when no connection with the BLAST database is possible.
  *
  * @author Lex Bosch
- * @version V1.0
+ * @version 1.0
+ * 29-03-2019
  */
-
 public class NoBlastConnectionException extends Exception {
 
     /**

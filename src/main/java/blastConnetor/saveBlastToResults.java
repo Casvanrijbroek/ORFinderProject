@@ -15,50 +15,58 @@ import java.util.regex.Pattern;
  *
  * @author Lex Bosch
  * @version 1.0
+ * 29-03-2019
  */
-
-public class saveBlastToResults {
-    private static final ArrayList<String> REGEXLIST = new ArrayList<String>(
+class saveBlastToResults {
+    /**
+     * Contains regex terms to extract data with.
+     */
+    private static final ArrayList<String> REGEX_LIST = new ArrayList<String>(
             Arrays.asList("Hit_accession", "Hit_def", "Hsp_bit-score", "Hsp_query-from", "Hsp_query-to",
                     "Hit_len", "Hsp_evalue", "Hsp_identity", "Hsp_hit-from", "Hsp_hit-to"));
 
-    // accession = Hit_accession
-    // description = Hit_def
-    // score = Hsp_bit-score
-    // queryCover = (Hsp_hit-to - Hsp_hit-from +1) / Hit_len * 100
-    // eValue = Hsp_evalue
-    // identity = Hsp_identity
-    // startposition = Hsp_hit-from
-    // stopposition = Hsp_hit-to
-
-    public ArrayList<Result> saveBlastToResults(String xmlString, ORF OrfSave, int amResults) {
+    /**
+     * Saves BLAST result in an ArrayList.
+     */
+    ArrayList<Result> saveBlastToResultsMethod(String xmlString, ORF OrfSave, int amResults) {
+        ArrayList<Result> resultList;
         List<String> allMatches = new ArrayList<String>();
         Matcher m = Pattern.compile("<Hit>[\\s\\S]*?<\\/Hit>")
                 .matcher(xmlString);
+
         while (m.find()) {
             allMatches.add(m.group());
         }
 
-        ArrayList<Result> resultList = new ArrayList<>();
+        resultList = new ArrayList<>();
+
         if(allMatches.size() < amResults){
             amResults = allMatches.size();
         }
+
         for (int countHit = 0; countHit < amResults; countHit++) {
             resultList.add(hitsToResults(allMatches.get(countHit), OrfSave));
         }
+
         return resultList;
     }
 
-    public Result hitsToResults(String Hit, ORF orfSave) {
+    /**
+     * Saves BLAST hits as Result objects.
+     */
+    private Result hitsToResults(String Hit, ORF orfSave) {
         ArrayList<String> regexResults = new ArrayList<>();
-        for (String pattern : REGEXLIST) {
+        Result tempResult;
+
+        for (String pattern : REGEX_LIST) {
             Pattern sinPat = Pattern.compile("<" + pattern + ">([\\s\\S]*?)<\\/" + pattern + ">");
             Matcher sinHit = sinPat.matcher(Hit);
             if (sinHit.find()) {
                 regexResults.add(sinHit.group(1));
             }
         }
-        Result tempResult = new Result();
+
+        tempResult = new Result();
         tempResult.setAccession(regexResults.get(0));
         tempResult.setDescription(regexResults.get(1));
         tempResult.setpValue(Float.parseFloat(regexResults.get(6)));
@@ -68,9 +76,7 @@ public class saveBlastToResults {
                 + 1) / Integer.parseInt(regexResults.get(5))) * 100);
         tempResult.setStartPosition(Integer.parseInt(regexResults.get(7)));
         tempResult.setStopPosition(Integer.parseInt(regexResults.get(8)));
+
         return tempResult;
     }
-
-
-
 }

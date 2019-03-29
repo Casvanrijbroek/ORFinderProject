@@ -1,30 +1,33 @@
 package orFinderApp;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+/**
+ * This class represents an Open Reading Frame.
+ *
+ * @author Lex Bosch
+ * @version 1.0
+ * 29-03-2019
+ */
 public class ORF {
-
     /**
      * Arraylist containing the results
      */
     private ArrayList<Result> resultList;
-
     /**
      * startPosition of the ORFinder.orFinderApp.ORF
      */
     private int startPosition;
-
     /**
-     * stopPosition of the ORFinder.orFinderApp.ORF
+     * stopPosition of the ORFinder.orFinderApp.ORF.
      */
     private int stopPosition;
 
     /**
-     * constructor of the ORFinder.orFinderApp.ORF
+     * constructor of the ORFinder.orFinderApp.ORF.
      *
-     * @param startPosition
-     * @param stopPosition
+     * @param startPosition the start position
+     * @param stopPosition the stop position
      */
     public ORF(int startPosition, int stopPosition) {
         setPositions(startPosition, stopPosition);
@@ -32,10 +35,10 @@ public class ORF {
     }
 
     /**
-     * Set start and stop position
+     * Set start and stop position.
      *
-     * @param startPosition
-     * @param stopPosition
+     * @param startPosition the start position
+     * @param stopPosition the stop position
      */
     private void setPositions(int startPosition, int stopPosition) {
         this.startPosition = startPosition;
@@ -43,7 +46,7 @@ public class ORF {
     }
 
     /**
-     * Gets resultList
+     * Gets resultList.
      *
      * @return value of resultList
      */
@@ -52,7 +55,7 @@ public class ORF {
     }
 
     /**
-     * Gets startPosition
+     * Gets startPosition.
      *
      * @return value of startPosition
      */
@@ -61,7 +64,7 @@ public class ORF {
     }
 
     /**
-     * Gets stopPosition
+     * Gets stopPosition.
      *
      * @return value of stopPosition
      */
@@ -70,23 +73,37 @@ public class ORF {
     }
 
     /**
-     * clear ArrayList resultList
+     * clear ArrayList resultList.
      */
     public void clearResultList() {
         resultList = null;
     }
 
+    /**
+     * Adds a Result to the resultList.
+     *
+     * @param addResult the result that is to be added
+     */
     public void addResult(Result addResult){
         this.resultList.add(addResult);
     }
 
+    /**
+     * Sets the resultList.
+     *
+     * @param resultList ArrayList with Results to be set
+     */
     public void setResultList(ArrayList<Result> resultList){
         this.resultList = resultList;
     }
 
+    /**
+     * Returns the object as a String visualising the positions of the ORF.
+     *
+     * @return the String that is to be returned
+     */
     @Override
     public String toString() {
         return String.format("Pos %d - %d", startPosition, stopPosition);
     }
 }
-

@@ -1,46 +1,41 @@
 package orFinderApp;
 
+/**
+ * This class represents a NCBI BLAST result.
+ *
+ * @author Lex Bosch
+ * @version 1.0
+ * 29-03-2019
+ */
 public class Result {
-
-    public Result(){
-
-    }
-
     /**
      * accession code of the result
      */
     private String accession;
-
     /**
      * description of the result
      */
     private String description;
-
     /**
      * score of the result
      */
     private int score;
-
     /**
      * queryCover value of the result
      */
     private int queryCover;
-
     /**
      * pValue value of the result
      */
     private float pValue;
-
     /**
      * identity percentage of the result
      */
     private int identity;
-
     /**
      * startPosition of the result
      */
     private int startPosition;
-
     /**
      * stopPosition of the result
      */
@@ -189,7 +184,6 @@ public class Result {
     public void setStopPosition(int stopPosition) {
         this.stopPosition = stopPosition;
     }
-
 
     /**
      * returns the accession and description

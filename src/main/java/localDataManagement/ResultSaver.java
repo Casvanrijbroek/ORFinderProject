@@ -5,7 +5,6 @@ import orFinderApp.Query;
 import orFinderApp.Result;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 
 /**
@@ -13,6 +12,7 @@ import java.io.*;
  *
  * @author Lex Bosch
  * @version 1.0
+ * 29-03-2019
  */
 
 public class ResultSaver {
@@ -20,60 +20,69 @@ public class ResultSaver {
     /**
      * Writes the file containing the Query object.
      *
-     * @param query Object containing the information to be stored.
-     * @throws FileNotFoundException No access to create folder.
-     * @throws NullPointerException  No ORFs within the query
+     * @param query an Object containing the information to be stored
+     * @throws FileNotFoundException no access to create folder
+     * @throws NullPointerException  no ORFs within the query
      */
     public void saveResults(Query query) throws IOException, NullPointerException {
-        String filePath = createResultsFolder("SavedResults");
+        FileWriter filewriter;
+        String filePath;
+
+        filePath = "SavedResults";
+        createResultsFolder(filePath);
         chooseOverwriteFile(filePath + File.separator + query.getHeader()
                 .replaceAll(" ", "_").replaceAll(">", ""));
-        FileWriter writeFiles;
+
         try {
             if(query.getOrfList().size() == 0){
                 throw new NullPointerException();
             }
-            writeFiles = new FileWriter(filePath + File.separator + query.getHeader()
+
+            filewriter = new FileWriter(filePath + File.separator + query.getHeader()
                     .replaceAll(" ", "_").replaceAll(">", ""));
-            writeFiles.append(query.getHeader()).append(";").append(query.getSequence()).append("\n");
+            filewriter.append(query.getHeader()).append(";").append(query.getSequence()).append("\n");
+
             for (ORF occORF : query.getOrfList()) {
-                writeFiles.append(writeORF(occORF));
+                filewriter.append(writeORF(occORF));
             }
-            writeFiles.close();
-        } catch (NullPointerException NPE) {
+
+            filewriter.close();
+        } catch (NullPointerException err) {
             throw new NullPointerException("Geen ORFs gevonden in het opgegeven query.");
         }
     }
 
     /**
-     * Creates folder if so needed and doesn't exist yet.
+     * Creates a folder if needed and doesn't exist yet.
      *
-     * @param addDir
-     * @return
+     * @param addDir the folder that needs to be located
      */
-    private String createResultsFolder(String addDir) {
+    private void createResultsFolder(String addDir) {
         String workingDir = System.getProperty("user.dir");
         File resultDir = new File(workingDir + File.separator + addDir);
         if (!resultDir.exists()) {
             resultDir.mkdirs();
         }
-        return addDir;
     }
 
-
     /**
-     * Creates String containing the information of the ORF given.
-     * @param orf ORF object to have he information extracted from.
-     * @return String containing the information of the given ORF.
+     * Creates a String containing the information of the ORF given.
+     *
+     * @param orf the ORF object to have information extracted from
+     * @return a String containing the information of the given ORF
      */
     private String writeORF(ORF orf) {
+        StringBuilder orfBuilder;
+
         try {
-            StringBuilder orfBuilder = new StringBuilder();
+            orfBuilder = new StringBuilder();
             orfBuilder.append("\n").append(orf.getStartPosition())
                     .append("\t").append(orf.getStopPosition()).append("\n");
+
             for (Result occResult : orf.getResultList()) {
                 orfBuilder.append(writeResults(occResult)).append("\n");
             }
+
             return orfBuilder.toString();
         } catch (NullPointerException NPE) {
             return "\n";
@@ -83,8 +92,8 @@ public class ResultSaver {
     /**
      * Returns a String containing the information stored in the result object in a tdf.
      *
-     * @param result Result object to have to data extracted from.
-     * @return Returns a String containing the information of the Result object.
+     * @param result a Result object to have to data extracted from
+     * @return a String containing the information of the Result object
      */
     private String writeResults(Result result) {
         return result.getAccession() + "\t" +
@@ -100,14 +109,15 @@ public class ResultSaver {
     /**
      * Calls optionPane to overwrite the existing file with the same header.
      *
-     * @param filePath File path of file to to overwrite.
-     * @exception NullPointerException Throws when the user decides not to overwrite the file.
+     * @param filePath the File path of file to to overwrite
+     * @exception NullPointerException when the user decides not to overwrite the file
      */
     private void chooseOverwriteFile(String filePath) throws NullPointerException {
         File existFile = new File(filePath);
+        Object[] options = {"Ja, Graag",
+                "Nee, bedankt"};
+
         if (existFile.exists()) {
-            Object[] options = {"Ja, Graag",
-                    "Nee, bedankt"};
             int n = JOptionPane.showOptionDialog(null,
                     "Resultaten met deze header bestaan al.\n Wilt u deze overschrijven?\n" +
                             " Oude resultaten zullen permanent verloren raken",
@@ -117,6 +127,7 @@ public class ResultSaver {
                     null,
                     options,
                     options[1]);
+
             if (n == 1) {
                 throw new NullPointerException("Bestand is niet opgeslagen");
             }

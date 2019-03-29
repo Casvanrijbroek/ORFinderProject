@@ -2,8 +2,14 @@ package orFinderApp;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a DNA sequence with the possibility to add ORFs located on the sequence.
+ *
+ * @author Lex Bosch
+ * @version 1.0
+ * 29-03-2019
+ */
 public class Query {
-
     /**
      * ArrayList containing ORFinder.orFinderApp.ORF resutls
      */
@@ -73,9 +79,8 @@ public class Query {
         return sequence;
     }
 
-
     /**
-     * Creates a list of sequences of the ORFs
+     * Creates a list of sequences of the ORFs.
      *
      * @return Arraylist of protein sequences
      */
@@ -119,8 +124,9 @@ public class Query {
 
 
     /**
-     * Returns the subsequence of the ORF
-     * @param subStringOrf The orf
+     * Returns the subsequence of the ORF.
+     *
+     * @param subStringOrf the orf
      * @return String subsequence of the ORF
      */
     public String getSubSequence(ORF subStringOrf){

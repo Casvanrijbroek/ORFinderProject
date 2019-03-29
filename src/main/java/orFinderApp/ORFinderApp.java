@@ -1,6 +1,6 @@
 package orFinderApp;
 
-import localDataManagement.ResultDeletor;
+import localDataManagement.ResultDeleter;
 import localDataManagement.ResultOpener;
 import orFinderGUI.ORFinderGui;
 import orFinder.ORFinder;
@@ -43,10 +43,25 @@ public class ORFinderApp {
      * The ProteinBlast object used to BLAST protein sequences via the NCBI BLAST server.
      */
     private proteinBlast proteinBlast;
+    /**
+     * The ORFinderGUI object that visualises the application to the user.
+     */
     private ORFinderGui orFinderGui;
-    private ORFinder orFinderFinder;
+    /**
+     * The ORFinder to look for ORFs is Query objects.
+     */
+    private ORFinder orFinder;
+    /**
+     * The resultWriter to save Query objects locally.
+     */
     private ResultSaver resultWriter;
-    private ResultDeletor resultDeletor;
+    /**
+     * The resultDeleter to delete local results.
+     */
+    private ResultDeleter resultDeleter;
+    /**
+     * The resultOpener to open local results.
+     */
     private ResultOpener resultOpener;
 
     /**
@@ -67,10 +82,10 @@ public class ORFinderApp {
 
         databaseConnector = new Connector();
         proteinBlast = new proteinBlast();
-        orFinderFinder = new ORFinder();
+        orFinder = new ORFinder();
         orFinderGui = new ORFinderGui(this);
         resultWriter = new ResultSaver();
-        resultDeletor = new ResultDeletor();
+        resultDeleter = new ResultDeleter();
         resultOpener = new ResultOpener();
 
         frame = new JFrame();
@@ -203,6 +218,12 @@ public class ORFinderApp {
         }
     }
 
+    /**
+     * Calls the resultWriter to write a local file with a the information of a Query object.
+     *
+     * @param query the Query object to be saved
+     * @return true if the saving was successful, else false
+     */
     public boolean saveQueryLocal(Query query) {
         try {
             resultWriter.saveResults(query);
@@ -215,18 +236,22 @@ public class ORFinderApp {
         }
     }
 
+    /**
+     * Calls the resultDeleter to delete a local result based on header.
+     *
+     * @param header the header of the result to be deleted
+     * @return true if the deleting was successful, else false
+     */
     public boolean deleteQueryLocal(String header) {
-        try {
-            resultDeletor.DeleteLocalSave(header);
-
-            return true;
-        } catch (IOException err) {
-            orFinderGui.showPopupError(err.getMessage());
-
-            return false;
-        }
+        return resultDeleter.deleteLocalSave(header);
     }
 
+    /**
+     * Calls the resultOpener to open a local result based on header.
+     *
+     * @param header the header of the result to be opened.
+     * @return true if the opening was successful, else false
+     */
     public boolean openQueryLocal(String header) {
         try {
             setQuery(resultOpener.openHead(header));
@@ -256,10 +281,19 @@ public class ORFinderApp {
         }
     }
 
+    /**
+     * Calls the ORFinder to search for ORFs in the sequence of the query
+     */
     public void findORFS() {
-        orFinderFinder.HandleQuery(query);
+        orFinder.HandleQuery(query);
     }
 
+    /**
+     * Handles a SQLException.
+     *
+     * @param err the SQLException to be handled
+     * @param action the action that was performed while performing the SQLException
+     */
     private void handleSQLException(SQLException err, String action) {
         if (err.getMessage().equals("Illegal operation on empty result set.")) {
             orFinderGui.setStatusLabel("De opgegeven header heeft niks opgeleverd in de database");
@@ -278,6 +312,11 @@ public class ORFinderApp {
                 action, err.getSQLState(), err.getErrorCode(), err.getMessage()));
     }
 
+    /**
+     * Handles a ConnectionException.
+     *
+     * @param err the ConnectionException to be handled
+     */
     private void handleConnectionException(ConnectionException err) {
         if (err.getMessage().equals("Please create a connection first")) {
             orFinderGui.showPopupError("Er heeft zich een interne fout voorgedaan in de applicatie\n" +
