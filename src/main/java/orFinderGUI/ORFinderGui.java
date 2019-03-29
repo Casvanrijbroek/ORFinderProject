@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  * results. The user can also save these results either locally or in the remote database.
  *
  * @author Elco van Rijswijk, Cas van Rijbroek
- * @version 1.4
+ * @version 1.5
  * 27-03-2019
  */
 public class ORFinderGui extends Component {
@@ -315,6 +315,7 @@ public class ORFinderGui extends Component {
      */
     private void readFile(String path) throws WrongFileException, IOException {
         BufferedReader reader;
+        Query query;
         String line;
         String header;
         String sequence;
@@ -341,9 +342,9 @@ public class ORFinderGui extends Component {
         sequence = sequenceBuilder.toString().toUpperCase();
         if (sequence.matches("[ATGCN]+")) {
 
-            orFinderApp.setQuery(new Query(header, sequence));
-            headerField.setText(header);
-            setSequenceArea(sequence);
+            query = new Query(header, sequence);
+            orFinderApp.setQuery(query);
+            visualiseQuery(query);
 
         } else
             throw new WrongFileException("Bestand: " + fileName + " is een bestand dat niet bestaat uit DNA, gebruik alstublieft een ander bestand");
@@ -436,6 +437,10 @@ public class ORFinderGui extends Component {
      * @param query the Query that is to be visualised
      */
     private void visualiseQuery(Query query) {
+        DefaultTableModel tableModel;
+
+        tableModel = (DefaultTableModel) resultTable.getModel();
+        tableModel.setRowCount(0);
         headerField.setText(query.getHeader());
         setSequenceArea(query.getSequence());
         orfComboBox.removeAllItems();
